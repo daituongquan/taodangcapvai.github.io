@@ -135,15 +135,16 @@ window.login = function() {
     .then(() => {
       window.location.href = "home.html";
     })
-    .catch(err => {
-      if (err.code === "auth/wrong-password") {
-        document.getElementById("error").innerText = "❌ Sai mật khẩu!";
-      } else if (err.code === "auth/user-not-found") {
-        document.getElementById("error").innerText = "❌ Email không tồn tại!";
-      } else {
-        document.getElementById("error").innerText = err.message;
-      }
-    });
+     .catch(err => {
+    if (
+    err.code === "auth/invalid-credential"
+  ) {
+    document.getElementById("error").innerText =
+      "❌ Sai tài khoản hoặc mật khẩu!";
+    } else {
+      document.getElementById("error").innerText = "ôi không SOS";
+    }
+  });
 }
 
 // nếu đã login → tự vào home
