@@ -2,74 +2,236 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Home</title>
+<title>Trang chủ</title>
 
 <style>
 body {
   margin: 0;
   font-family: Arial;
-  background: #111;
-  color: white;
 }
 
-.nav {
-  background: #222;
+.navbar {
+  background: #1e3c72;
   padding: 15px;
   display: flex;
   justify-content: space-between;
+  color: white;
 }
 
-button {
-  padding: 8px 15px;
+.menu button {
+  background: none;
   border: none;
-  border-radius: 5px;
-  background: red;
+  color: white;
+  margin: 0 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.page {
+  display: none;
+  padding: 30px;
+}
+
+.active {
+  display: block;
+}
+
+.logout {
+  background: #ff4d4d;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
   color: white;
   cursor: pointer;
+}
+
+input {
+  display: block;
+  margin: 10px 0;
+  padding: 8px;
+  width: 250px;
+}
+
+button.save {
+  background: #00c6ff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+/* avatar */
+#avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 10px 0;
+}
+
+#avatarList img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 5px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.3s;
+}
+
+#avatarList img:hover {
+  transform: scale(1.1);
+  border: 2px solid #00c6ff;
 }
 </style>
 </head>
 
 <body>
 
-<div class="nav">
-  <h3>🏠 Trang chủ</h3>
-  <button onclick="logout()">Đăng xuất</button>
+<div class="navbar">
+  <div class="menu">
+    <button onclick="showPage('home')">Trang chủ</button>
+    <button onclick="showPage('about')">Giới thiệu</button>
+    <button onclick="showPage('contact')">Liên hệ</button>
+    <button onclick="showPage('profile')">Profile</button>
+  </div>
+  <button class="logout" onclick="logout()">Đăng xuất</button>
 </div>
 
-<h2 id="user" style="text-align:center; margin-top:50px;"></h2>
+<!-- Trang chủ -->
+<div id="home" class="page active">
+  <h1>🏠 Trang chủ</h1>
+</div>
+
+<!-- Giới thiệu -->
+<div id="about" class="page">
+  <h1>📖 Giới thiệu</h1>
+</div>
+
+<!-- Liên hệ -->
+<div id="contact" class="page">
+  <h1>📞 Liên hệ</h1>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="page">
+  <h1>👤 Hồ sơ</h1>
+
+  <p><b>Email:</b> <span id="userEmail"></span></p>
+
+  <!-- avatar hiện tại -->
+  <img id="avatar" src="images/avatar1.png">
+
+  <h3>Chọn avatar</h3>
+  <div id="avatarList">
+    <img src="images/avatar1.png" onclick="selectAvatar(this)">
+    <img src="images/avatar2.png" onclick="selectAvatar(this)">
+    <img src="images/avatar3.png" onclick="selectAvatar(this)">
+    <img src="images/avatar4.png" onclick="selectAvatar(this)">
+  </div>
+
+  <input id="displayName" placeholder="Tên hiển thị">
+  <button class="save" onclick="saveName()">Lưu tên</button>
+
+  <h3>Đổi mật khẩu</h3>
+  <input id="newPass" type="password" placeholder="Mật khẩu mới">
+  <button class="save" onclick="changePassword()">Đổi mật khẩu</button>
+
+  <p id="msg"></p>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut }
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import {
+  getAuth,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+  updatePassword
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDaz1AZHFulAGimlsg98v-jk9mCsjE45Vw",
-    authDomain: "password-webtaodangcapvai.firebaseapp.com",
-    projectId: "password-webtaodangcapvai",
-    storageBucket: "password-webtaodangcapvai.firebasestorage.app",
-    messagingSenderId: "733412823271",
-    appId: "1:733412823271:web:70e99dccb5169256925242",
-    measurementId: "G-RQ20GVJKJP"
-  };
+  apiKey: "AIzaSyDaz1AZHFulAGimlsg98v-jk9mCsjE45Vw",
+  authDomain: "password-webtaodangcapvai.firebaseapp.com",
+  projectId: "password-webtaodangcapvai"
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-onAuthStateChanged(auth, user => {
-  if (user) {
-    userEl.innerText = "Xin chào: " + user.email;
-  } else {
-    window.location.href = "index.html";
-  }
-});
+let selectedAvatar = "";
 
+// chuyển tab
+window.showPage = function(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
+}
+
+// logout
 window.logout = function() {
   signOut(auth).then(() => {
     window.location.href = "index.html";
   });
 }
+
+// chọn avatar
+window.selectAvatar = function(img) {
+  selectedAvatar = img.src;
+  document.getElementById("avatar").src = img.src;
+
+  document.querySelectorAll("#avatarList img")
+    .forEach(i => i.style.border = "2px solid transparent");
+
+  img.style.border = "2px solid red";
+
+  // lưu local
+  localStorage.setItem("avatar", img.src);
+}
+
+// lưu tên
+window.saveName = function() {
+  let user = auth.currentUser;
+  let name = document.getElementById("displayName").value;
+
+  updateProfile(user, { displayName: name })
+    .then(() => {
+      document.getElementById("msg").innerText = "✅ Đã cập nhật!";
+    })
+    .catch(err => {
+      document.getElementById("msg").innerText = err.message;
+    });
+}
+
+// đổi mật khẩu
+window.changePassword = function() {
+  let user = auth.currentUser;
+  let newPass = document.getElementById("newPass").value;
+
+  updatePassword(user, newPass)
+    .then(() => {
+      document.getElementById("msg").innerText = "✅ Thành công!";
+    })
+    .catch(() => {
+      document.getElementById("msg").innerText = "❌ Cần đăng nhập lại!";
+    });
+}
+
+// load user
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "index.html";
+  } else {
+    document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("displayName").value = user.displayName || "";
+
+    // load avatar đã chọn
+    let saved = localStorage.getItem("avatar");
+    if (saved) {
+      document.getElementById("avatar").src = saved;
+    }
+  }
+});
 </script>
 
 </body>
