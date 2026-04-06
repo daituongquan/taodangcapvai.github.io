@@ -116,10 +116,10 @@ window.register = function() {
     })
       .catch(err => {
     if (
-    err.code === "auth/invalid-credential"
+    err.code === "auth/email-already-in-use"
   ) {
     document.getElementById("error").innerText =
-      "❌ Sai tài khoản hoặc mật khẩu!";
+      "Có thằng tới trước rồi em ạ sài mail khác hộ cái!";
     } else {
     document.getElementById("error").innerText = err.message;
   }
