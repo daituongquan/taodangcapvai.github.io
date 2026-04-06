@@ -8,6 +8,7 @@
 body {
   margin: 0;
   font-family: Arial;
+  transition: 0.3s;
 }
 
 .navbar {
@@ -43,6 +44,39 @@ body {
 
 .user-box span {
   font-weight: bold;
+}
+
+/* DARK BUTTON */
+#darkBtn {
+  border: none;
+  background: white;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* DARK MODE */
+.dark {
+  background: #121212;
+  color: white;
+}
+
+.dark .navbar {
+  background: #0a1f44;
+}
+
+.dark .profile-box {
+  background: #1e1e1e;
+}
+
+.dark input {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+}
+
+.dark button.save {
+  background: #444;
 }
 
 .page {
@@ -114,10 +148,13 @@ button.save {
     <button onclick="showPage('profile')">Profile</button>
   </div>
 
-  <!-- USER INFO -->
-  <div class="user-box" onclick="showPage('profile')">
-    <img id="navAvatar" src="images/avatar1.png">
-    <span id="navName">User</span>
+  <div style="display:flex; align-items:center; gap:15px;">
+    <button onclick="toggleDark()" id="darkBtn">🌙</button>
+
+    <div class="user-box" onclick="showPage('profile')">
+      <img id="navAvatar" src="images/avatar1.png">
+      <span id="navName">User</span>
+    </div>
   </div>
 </div>
 
@@ -234,6 +271,17 @@ window.changePassword = async function() {
   }
 }
 
+// 🌙 DARK MODE
+window.toggleDark = function() {
+  document.body.classList.toggle("dark");
+
+  let isDark = document.body.classList.contains("dark");
+  localStorage.setItem("darkMode", isDark);
+
+  document.getElementById("darkBtn").innerText = isDark ? "☀️" : "🌙";
+}
+
+// load user + dark mode
 onAuthStateChanged(auth, user => {
   if (!user) {
     window.location.href = "index.html";
@@ -248,6 +296,13 @@ onAuthStateChanged(auth, user => {
     if (avatar) {
       document.getElementById("avatar").src = avatar;
       document.getElementById("navAvatar").src = avatar;
+    }
+
+    // load dark mode
+    let dark = localStorage.getItem("darkMode") === "true";
+    if (dark) {
+      document.body.classList.add("dark");
+      document.getElementById("darkBtn").innerText = "☀️";
     }
   }
 });
