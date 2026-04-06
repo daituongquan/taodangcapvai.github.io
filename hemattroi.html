@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Hệ Mặt Trời</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    background-image: url('https://c.pxhere.com/photos/39/83/astronomy_constellation_dark_galaxy_night_night_sky_orion_space-1563485.jpg!d');
+    background-size: cover;
+    background-repeat: no-repeat
+}
+
+h2 { text-align: center; }
+
+/* ===== THÊM MỚI (KHÔNG ẢNH HƯỞNG CODE CŨ) ===== */
+.home-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+    padding: 10px 16px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: 1px solid white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.logout-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    padding: 10px 16px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+/* ===== HẾT PHẦN THÊM ===== */
+
+
+.solar-container {
+    position: relative;
+    width: 90vmin;
+    height: 90vmin;
+    margin: auto;
+    margin-top: 20px;
+}
+
+/* (GIỮ NGUYÊN TOÀN BỘ CODE CỦA BẠN TỪ ĐÂY TRỞ ĐI) */
+.sun {
+    width: 10vmin;
+    height: 10vmin;
+    background: orange;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 40px orange;
+    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHiTs_vwFJ9RjqFIzYS8NjQlhOckrzsiIfDw&s');
+    background-size: cover;
+    object-fit: cover;
+}
+
+.o {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 50%;
+    animation: rotate linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.planet {
+    position: absolute;
+    top: 50%;
+    right: -2vmin;
+    transform: translateY(-50%);
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+.planet img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.planet:hover {
+    transform: translateY(-50%) scale(2);
+}
+
+.sun:hover {
+    transform: translateX(-50%) translateY(-50%) scale(1.3);
+}
+
+.sun::after {
+    content: "Sun";
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.sun:hover::after {
+    opacity: 1;
+}
+
+/* size */
+.mercury { width: 2vmin; height: 2vmin; }
+.venus   { width: 3vmin; height: 3vmin; }
+.earth   { width: 3.2vmin; height: 3.2vmin; }
+.mars    { width: 2.6vmin; height: 2.6vmin; }
+.jupiter { width: 6vmin; height: 6vmin; }
+.saturn  { width: 5.5vmin; height: 5.5vmin; }
+.uranus  { width: 4vmin; height: 4vmin; }
+.neptune { width: 3.8vmin; height: 3.8vmin; }
+
+@keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* overlay giữ nguyên */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.overlay.active { display: flex; }
+
+.overlay-content {
+    background: #111;
+    width: 70%;
+    max-height: 80%;
+    padding: 30px;
+    border-radius: 10px;
+    overflow-y: auto;
+}
+
+.planet-page { display: none; }
+.planet-page.active { display: block; }
+
+.planet-layout {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.planet-image {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+}
+
+.planet-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.planet-text { flex: 1; }
+
+@media (max-width: 600px) {
+    .planet-layout {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Hệ Mặt Trời</h2>
+
+<!-- ✅ CHỈ THÊM ĐOẠN NÀY -->
+<button class="home-btn" onclick="goHome()">← Home</button>
+<button class="logout-btn" onclick="logout()">Đăng xuất</button>
+<div class="solar-container">
+ 
+
+    <div class="sun"></div>
+
+    <div class="o" style="width:18vmin;height:18vmin;animation-duration:20s;">
+        <div class="planet mercury" onclick="openOverlay('mercury')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg">
+        </div>
+    </div>
+
+    <div class="o" style="width:26vmin;height:26vmin;animation-duration:30s;">
+        <div class="planet venus" onclick="openOverlay('venus')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg">
+        </div>
+    </div>
+
+    <div class="o" style="width:34vmin;height:34vmin;animation-duration:40s;">
+        <div class="planet earth" onclick="openOverlay('earth')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg">
+        </div>
+    </div>
+
+    <div class="o" style="width:42vmin;height:42vmin;animation-duration:50s;">
+        <div class="planet mars" onclick="openOverlay('mars')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg">
+        </div>
+    </div>
+
+    <div class="o" style="width:52vmin;height:52vmin;animation-duration:70s;">
+        <div class="planet jupiter" onclick="openOverlay('jupiter')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg">
+        </div>
+    </div>
+
+    <div class="o" style="width:62vmin;height:62vmin;animation-duration:90s;">
+        <div class="planet saturn" onclick="openOverlay('saturn')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg">
+        </div>
+    </div>
+
+    <div class="o" style="width:72vmin;height:72vmin;animation-duration:110s;">
+        <div class="planet uranus" onclick="openOverlay('uranus')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg">
+        </div>
+    </div>
+
+    <div class="o" style="width:82vmin;height:82vmin;animation-duration:130s;">
+        <div class="planet neptune" onclick="openOverlay('neptune')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg">
+        </div>
+    </div>
+  
+</div>
+<p style="color: white">beta 0.0.1</p>
+
+<div id="overlay" class="overlay">
+    <div class="overlay-content">
+
+      
+        <div id="mercury-page" class="planet-page">
+            <div class="planet-layout">
+                <div class="planet-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg">
+                </div>
+                <div class="planet-text">
+                    <h1>Sao Thủy</h1>
+                    <p>Hành tinh gần Mặt Trời nhất.</p>
+                </div>
+            </div>
+          <ul>
+                <li>Mercury</li>
+                <li>Bán kính : 2439.7 Km</li>
+                <li>Khối lượng: 3,30 × 10²³ kg</li> 
+                <li>Nhiệt độ bề mặt: Ban ngày: ~430°C - Ban đêm: ~-180°C </li>
+                <li>Bầu khí quyển : gần như không có chỉ có một lớp rất mỏng áp suất gần như bằng không</li>
+                <li>Gia tốc trọng trường: 3,7 m/s²</li>
+                <li>Quỹ đạo : Hình elip rất dẹt</li>
+                <li>Chu kỳ quỹ đạo : 1 năm bằng 88 ngày Trái Đất và 1 ngày đêm dài 176 ngày Trái Đất.</li>
+                <li>Khoảng cách trung bình đến Mặt Trời (57.9 Triệu Km)</li>
+            </ul>
+        </div>
+
+       
+        <div id="venus-page" class="planet-page">
+            <div class="planet-layout">
+                <div class="planet-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg">
+                </div>
+                <div class="planet-text">
+                    <h1>Sao Kim</h1>
+                    <p>Hành tinh nóng nhất hệ Mặt Trời.</p>
+                </div>
+            </div>
+            <ul>
+                <li>Venus</li>
+                <li>Bán kính: 6.052 km</li>
+                <li>Diện tích bề mặt: 4,60 × 10⁸ km²</li>
+                <li>Khối lượng: 4,87 × 10²⁴ kg</li>
+                <li>Nhiệt độ bề mặt: ~465°C </li>
+                <li>Gia tốc trọng trường: 8,87 m/s²</li>
+                <li>Chu kì: 225 ngày</li>
+                <li>Khoảng cách đến mặt trời: 108,2 triệu km</li>
+                <li>Bầu khí quyển:Dày</li>
+            </ul>
+        </div>
+
+        
+        <div id="earth-page" class="planet-page">
+            <div class="planet-layout">
+                <div class="planet-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg">
+                </div>
+                <div class="planet-text">
+                    <h1>Trái Đất</h1>
+                    <p>Hành tinh duy nhất có sự sống.</p>
+                </div>
+            </div>
+          <ul>
+                <li>Earth</li>
+                <li>Bán kính: 6.371 km</li>
+                <li>Diện tích bề mặt: 5,10 × 10⁸ km²</li>
+                <li>Nhiệt độ bề mặt: Khối lượng: 5,97 × 10²⁴ kg~-89°C → 56°C  </li>
+                <li>Khối lượng: 5,97 × 10²⁴ kg</li>
+                <li>Gia tốc trọng trường: 9,81 m/s²</li>
+                <li>Bầu khí quyển: Vừa </li>
+                <li>Quỹ đạo: Elip</li>
+                <li>Chu kì: 365,25 ngày</li>
+                <li>Khoảng cách: 149,6 triệu km</li>
+            </ul>
+        </div>
+
+       
+        <div id="mars-page" class="planet-page">
+            <div class="planet-layout">
+                <div class="planet-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg">
+                </div>
+                <div class="planet-text">
+                    <h1>Sao Hỏa</h1>
+                    <p>Hành tinh đỏ.</p>
+                </div>
+                
+            </div>
+          <ul>
+                <li>Mars</li>
+                <li>Bán kính: 3.390 km</li>
+                <li>Diện tích bề mặt: 1,45 × 10⁸ km²</li>
+                <li>Nhiệt độ bề mặt: ~-125°C → 20°C</li>
+                <li>Khối lượng: 6,42 × 10²³ kg</li>
+                <li>Gia tốc trọng trường: 3,71 m/s²</li>
+                <li>Bầu khí quyển: Mỏng</li>
+                <li>Quỹ đạo: Elip</li>
+                <li>Chu kì: 687 ngày</li>
+                <li>Khoảng cách: 227,9 triệu km</li>
+               
+            </ul>
+            <p>Tạm biệt trái đất xô bồ tớ về sao Hỏa
+        </div>
+
+       
+        <div id="jupiter-page" class="planet-page">
+            <div class="planet-layout">
+                <div class="planet-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg">
+                </div>
+                <div class="planet-text">
+                    <h1>Sao Mộc</h1>
+                    <p>Hành tinh lớn nhất hệ Mặt Trời.</p>
+                </div>                
+            </div>
+            <ul>
+                <li>Jupiter</li>
+                <li>Bán kính trung bình: khoảng 69.911 km</li>
+              
+                <li>Diện tích bề mặt: 6,14 × 10¹⁰ km²</li>
+                <li>Nhiệt độ bề mặt:  </li>
+                <li>Khối lượng: 1,90 × 10²⁷ kg</li>        
+                <li>Quỹ đạo: Elip (gần tròn)</li>
+                <li>Chu kỳ quỹ đạo: khoảng 11,86 năm Trái Đất (gần 12 năm)   </li>
+                <li>Khoảng cách trung bình đến Mặt Trời: khoảng 778 triệu km (≈ 5,2 AU) </li>
+                <li>Bầu khí quyển:Dày</li>
+                         
+            </ul>
+        </div>
+
+        <div id="saturn-page" class="planet-page">
+            <div class="planet-layout">
+                <div class="planet-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg">
+                </div>
+                <div class="planet-text">
+                    <h1>Sao Thổ</h1>
+                    <p>Có hệ vành đai nổi bật.</p>
+                </div>
+            </div>
+          <ul>
+                <li>Saturn</li>
+                <li>Bán kính: 58.232 km</li>
+                <li>Diện tích bề mặt: 4,27 × 10¹⁰ km²</li>
+                <li>Nhiệt độ bề mặt: ~-178°C </li>
+                <li>Khối lượng: 5,68 × 10²⁶ kg</li>
+                <li>Gia tốc trọng trường: 10,44 m/s²</li>
+                <li>Quỹ đạo: Elip</li>
+                <li>Chu kì: 29,46 năm</li>
+                <li>Khoảng cách: 1,43 tỷ km</li>      
+                <li>Bầu khí quyển: Dày</li>    
+                          
+            </ul>
+        </div>
+
+
+        <div id="uranus-page" class="planet-page">
+            <div class="planet-layout">
+                <div class="planet-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg">
+                </div>
+                <div class="planet-text">
+                    <h1>Sao Thiên Vương</h1>
+                    <p>Trục quay nghiêng gần 90°.</p>
+                </div>
+            </div>
+          <ul>
+                <li>Uranus</li>
+                <li>Bán kính: khoảng 25.362 km</li>
+                <li>Diện tích bề mặt: khoảng 8,1 tỷ km²</li>
+                <li>Nhiệt độ bề mặt: ~-224°C </li>
+                <li>Gia tốc trọng trường: khoảng 8,69 m/s²</li>
+                <li>Quỹ đạo: gần hình tròn</li>
+                <li>Chu kỳ quay quanh Mặt Trời (1 năm): khoảng 84 năm Trái Đất</li>
+                <li>Khoảng cách trung bình đến Mặt Trời: khoảng 2,87 tỷ km</li>
+                <li>Bầu khí quyển:Dày</li>
+            </ul>
+        </div>
+
+
+        <div id="neptune-page" class="planet-page">
+            <div class="planet-layout">
+                <div class="planet-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg">
+                </div>
+                <div class="planet-text">
+                    <h1>Sao Hải Vương</h1>
+                    <p>Hành tinh xa Mặt Trời nhất.</p>
+                </div>
+            </div>
+          <ul>
+                <li>Neptune</li>
+                <li>Bán kính: Khoảng 24,622 km</li>             
+                <li>Khối lượng: 102,4 x 10^24 kg</li>
+                <li>Diện tích bề mặt: 7,618 x 10^9 km2</li>
+                <li>Nhiệt độ bề mặt: ~-214°C</li>
+                <li>Quỹ đạo: elip gần như tròn</li>
+                <li>Chu kỳ quỹ đạo (Năm):  Sao Hải Vương mất khoảng 164,79  năm Trái Đất để hoàn thành một vòng quanh Mặt Trời.</li>
+                <li>Khoảng cách: Khoảng cách trung bình là 4,5 tỷ km (30,1 AU)</li>
+                <li>Bầu khí quyển:Dày</li>
+            </ul>
+        </div>
+
+        <button onclick="closeOverlay()" >Quay lại</button>
+    </div>
+</div>
+
+<script>
+
+function openOverlay(name) {
+    document.getElementById("overlay").classList.add("active");
+    document.querySelectorAll(".planet-page").forEach(p => p.classList.remove("active"));
+    document.getElementById(name + "-page").classList.add("active");
+}
+
+let user = localStorage.getItem("username");
+if(!user){
+    window.location.replace("login.html");
+}
+
+function closeOverlay() {
+    document.getElementById("overlay").classList.remove("active");
+}
+
+/* ===== THÊM MỚI ===== */
+function goHome() {
+    window.location.href = "home.html";
+}
+
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+}
+
+function openOverlay(name) {
+    document.getElementById("overlay").classList.add("active");
+    document.querySelectorAll(".planet-page").forEach(p => p.classList.remove("active"));
+    document.getElementById(name + "-page").classList.add("active");
+}
+
+function closeOverlay() {
+    document.getElementById("overlay").classList.remove("active");
+}
+</script>
+
+</body>
+</html>
