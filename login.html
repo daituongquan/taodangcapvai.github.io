@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đăng nhập</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    margin-top: 100px;
+    color: white;
+
+    /* nền vũ trụ */
+    background: url("https://images.unsplash.com/photo-1446776811953-b23d57bd21aa")
+                no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* box */
+.box {
+    display: none;
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* active */
+.active {
+    display: inline-block;
+}
+
+/* input đồng đều */
+input {
+    width: 250px;
+    padding: 10px;
+    margin: 10px auto;
+    border-radius: 5px;
+    border: none;
+    box-sizing: border-box;
+    display: block;
+}
+
+/* password + icon */
+.password-box {
+    position: relative;
+    width: 250px;
+    margin: 10px auto;
+}
+
+.password-box input {
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+button {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    border: none;
+    background: #00c3ff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0099cc;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginBox" class="box active">
+    <h2>Đăng nhập</h2>
+    <input type="text" id="loginUser" placeholder="Tên đăng nhập">
+
+    <div class="password-box">
+        <input type="password" id="loginPass" placeholder="Mật khẩu">
+        <span class="toggle-password" onclick="togglePassword('loginPass')">👁️</span>
+    </div>
+
+    <button onclick="login()">Đăng nhập</button>
+
+    <p>Chưa có tài khoản?</p>
+    <button onclick="showRegister()">Đăng ký</button>
+</div>
+
+<!-- REGISTER -->
+<div id="registerBox" class="box">
+    <h2>Đăng ký</h2>
+    <input type="text" id="regUser" placeholder="Tên đăng nhập">
+
+    <div class="password-box">
+        <input type="password" id="regPass" placeholder="Mật khẩu">
+        <span class="toggle-password" onclick="togglePassword('regPass')">👁️</span>
+    </div>
+
+    <button onclick="register()">Đăng ký</button>
+
+    <p>Đã có tài khoản?</p>
+    <button onclick="showLogin()">Đăng nhập</button>
+</div>
+
+<script>
+function showRegister() {
+    document.getElementById("loginBox").classList.remove("active");
+    document.getElementById("registerBox").classList.add("active");
+}
+
+function showLogin() {
+    document.getElementById("registerBox").classList.remove("active");
+    document.getElementById("loginBox").classList.add("active");
+}
+
+/* hiện/ẩn mật khẩu */
+function togglePassword(id) {
+    const pass = document.getElementById(id);
+    pass.type = (pass.type === "password") ? "text" : "password";
+}
+
+function register() {
+    let user = document.getElementById("regUser").value;
+    let pass = document.getElementById("regPass").value;
+
+    if(user === "" || pass === ""){
+        alert("Nhập đầy đủ!");
+        return;
+    }
+
+    localStorage.setItem("username", user);
+    localStorage.setItem("password", pass);
+
+    alert("Đăng ký thành công!");
+    showLogin();
+}
+
+function login() {
+    let user = document.getElementById("loginUser").value;
+    let pass = document.getElementById("loginPass").value;
+
+    let savedUser = localStorage.getItem("username");
+    let savedPass = localStorage.getItem("password");
+
+    if(user === savedUser && pass === savedPass){
+        window.location.replace("home.html");
+    } else {
+        alert("Sai tài khoản!");
+    }
+}
+</script>
+
+</body>
+</html>
+
