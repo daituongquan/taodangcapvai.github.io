@@ -2,40 +2,71 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Login Firebase</title>
+<title>Login</title>
 
 <style>
 body {
-    font-family: Arial;
-    text-align: center;
-    margin-top: 100px;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  font-family: Arial;
+}
+
+.container {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 15px;
+  width: 300px;
+  text-align: center;
+  color: white;
 }
 
 input {
-    display: block;
-    margin: 10px auto;
-    padding: 8px;
-    width: 200px;
+  width: 90%;
+  padding: 10px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
 }
 
 button {
-    padding: 8px 15px;
-    margin: 5px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #00c6ff;
+  color: white;
+  cursor: pointer;
+}
+
+.toggle {
+  margin-top: 10px;
+  cursor: pointer;
+  color: #ccc;
 }
 </style>
 </head>
+
 <body>
 
-<h2>Đăng ký</h2>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Mật khẩu">
-<button onclick="register()">Đăng ký</button>
+<div class="container">
+  <h2 id="title">Đăng nhập</h2>
 
-<h2>Đăng nhập</h2>
-<button onclick="login()">Đăng nhập</button>
-<button onclick="logout()">Đăng xuất</button>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Mật khẩu">
 
-<h3 id="status"></h3>
+  <button onclick="submitForm()">Tiếp tục</button>
+
+  <div class="toggle" onclick="toggleMode()">
+    Chưa có tài khoản? Đăng ký
+  </div>
+
+  <h4 id="status"></h4>
+</div>
+
 <script type="module">
   // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
@@ -65,39 +96,31 @@ import {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Đăng ký
-window.register = function() {
-  let email = document.getElementById("email").value;
-  let pass = document.getElementById("password").value;
+let isLogin = true;
 
-  createUserWithEmailAndPassword(auth, email, pass)
-    .then(() => alert("Đăng ký thành công!"))
-    .catch(err => alert(err.message));
+window.toggleMode = function() {
+  isLogin = !isLogin;
+  document.getElementById("title").innerText = isLogin ? "Đăng nhập" : "Đăng ký";
 }
 
-// Đăng nhập
-window.login = function() {
-  let email = document.getElementById("email").value;
-  let pass = document.getElementById("password").value;
+window.submitForm = function() {
+  let email = emailInput.value;
+  let pass = password.value;
 
-  signInWithEmailAndPassword(auth, email, pass)
-    .then(() => alert("Đăng nhập thành công!"))
-    .catch(err => alert(err.message));
+  if (isLogin) {    
+    signInWithEmailAndPassword(auth, email, pass)
+      .then(() => window.location.href = "home.html")
+      .catch(err => status.innerText = err.message);
+  } else {
+    createUserWithEmailAndPassword(auth, email, pass)
+      .then(() => status.innerText = "Đăng ký thành công!")
+      .catch(err => status.innerText = err.message);
+  }
 }
 
-// Đăng xuất
-window.logout = function() {
-  signOut(auth);
-}
-
-// Tự động giữ đăng nhập
 onAuthStateChanged(auth, user => {
   if (user) {
-    document.getElementById("status").innerText =
-      "Đã đăng nhập: " + user.email;
-  } else {
-    document.getElementById("status").innerText =
-      "Chưa đăng nhập";
+    window.location.href = "home.html";
   }
 });
 </script>
