@@ -121,8 +121,8 @@ window.register = function() {
     document.getElementById("error").innerText =
       "❌ Sai tài khoản hoặc mật khẩu!";
     } else {
-      document.getElementById("error").innerText = "ôi không SOS";
-    }
+    document.getElementById("error").innerText = err.message;
+  }
   });
 }
 
