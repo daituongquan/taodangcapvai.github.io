@@ -306,11 +306,13 @@ window.toggleDark = function() {
 }
 
 onAuthStateChanged(auth, user => {
-  if (!user) return location.href = "index.html";
+  if (!user) return location.href = "index.html";}
+  else {
+    document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("userName").innerText = user.displayName || "User";
+    document.getElementById("displayName").value = user.displayName || "";
 
-  document.getElementById("userEmail").innerText = user.email;
-  document.getElementById("userName").innerText = user.displayName || "User";
-  document.getElementById("navName").innerText = user.displayName || "User";
+    document.getElementById("navName").innerText = user.displayName || "User";
 
   let avatar = localStorage.getItem("avatar");
   if (avatar) {
