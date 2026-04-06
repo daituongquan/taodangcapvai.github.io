@@ -27,6 +27,24 @@ body {
   cursor: pointer;
 }
 
+/* USER NAV */
+.user-box {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.user-box img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.user-box span {
+  font-weight: bold;
+}
+
 .page {
   display: none;
   padding: 30px;
@@ -39,10 +57,11 @@ body {
 .logout {
   background: #ff4d4d;
   border: none;
-  padding: 8px 12px;
+  padding: 10px 15px;
   border-radius: 6px;
   color: white;
   cursor: pointer;
+  margin-top: 20px;
 }
 
 input {
@@ -61,12 +80,10 @@ button.save {
   cursor: pointer;
 }
 
-/* avatar */
 #avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  object-fit: cover;
   margin: 10px 0;
 }
 
@@ -76,13 +93,13 @@ button.save {
   border-radius: 50%;
   margin: 5px;
   cursor: pointer;
-  border: 2px solid transparent;
-  transition: 0.3s;
 }
 
-#avatarList img:hover {
-  transform: scale(1.1);
-  border: 2px solid #00c6ff;
+.profile-box {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
 }
 </style>
 </head>
@@ -96,49 +113,55 @@ button.save {
     <button onclick="showPage('contact')">Liên hệ</button>
     <button onclick="showPage('profile')">Profile</button>
   </div>
-  <button class="logout" onclick="logout()">Đăng xuất</button>
+
+  <!-- USER INFO -->
+  <div class="user-box" onclick="showPage('profile')">
+    <img id="navAvatar" src="images/avatar1.png">
+    <span id="navName">User</span>
+  </div>
 </div>
 
-<!-- Trang chủ -->
 <div id="home" class="page active">
   <h1>🏠 Trang chủ</h1>
 </div>
 
-<!-- Giới thiệu -->
 <div id="about" class="page">
   <h1>📖 Giới thiệu</h1>
 </div>
 
-<!-- Liên hệ -->
 <div id="contact" class="page">
   <h1>📞 Liên hệ</h1>
 </div>
 
-<!-- PROFILE -->
 <div id="profile" class="page">
   <h1>👤 Hồ sơ</h1>
 
-  <p><b>Email:</b> <span id="userEmail"></span></p>
+  <div class="profile-box">
+    <img id="avatar" src="images/avatar1.png">
+    <p><b>Tên:</b> <span id="userName"></span></p>
+    <p><b>Email:</b> <span id="userEmail"></span></p>
 
-  <!-- avatar hiện tại -->
-  <img id="avatar" src="images/avatar1.png">
+    <h3>Đổi tên</h3>
+    <input id="displayName" placeholder="Tên hiển thị">
+    <button class="save" onclick="saveName()">Lưu tên</button>
 
-  <h3>Chọn avatar</h3>
-  <div id="avatarList">
-    <img src="images/avatar1.png" onclick="selectAvatar(this)">
-    <img src="images/avatar2.png" onclick="selectAvatar(this)">
-    <img src="images/avatar3.png" onclick="selectAvatar(this)">
-    <img src="images/avatar4.png" onclick="selectAvatar(this)">
+    <h3>Chọn avatar</h3>
+    <div id="avatarList">
+      <img src="images/avatar1.png" onclick="selectAvatar(this)">
+      <img src="images/avatar2.png" onclick="selectAvatar(this)">
+      <img src="images/avatar3.png" onclick="selectAvatar(this)">
+      <img src="images/avatar4.png" onclick="selectAvatar(this)">
+    </div>
+
+    <h3>Đổi mật khẩu</h3>
+    <input id="oldPass" type="password" placeholder="Mật khẩu cũ">
+    <input id="newPass" type="password" placeholder="Mật khẩu mới">
+    <button class="save" onclick="changePassword()">Đổi mật khẩu</button>
+
+    <p id="msg"></p>
+
+    <button class="logout" onclick="logout()">Đăng xuất</button>
   </div>
-
-  <input id="displayName" placeholder="Tên hiển thị">
-  <button class="save" onclick="saveName()">Lưu tên</button>
-
-  <h3>Đổi mật khẩu</h3>
-  <input id="newPass" type="password" placeholder="Mật khẩu mới">
-  <button class="save" onclick="changePassword()">Đổi mật khẩu</button>
-
-  <p id="msg"></p>
 </div>
 
 <script type="module">
@@ -148,7 +171,9 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  updatePassword
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -160,36 +185,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-let selectedAvatar = "";
-
-// chuyển tab
 window.showPage = function(pageId) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(pageId).classList.add("active");
 }
 
-// logout
 window.logout = function() {
   signOut(auth).then(() => {
     window.location.href = "index.html";
   });
 }
 
-// chọn avatar
 window.selectAvatar = function(img) {
-  selectedAvatar = img.src;
   document.getElementById("avatar").src = img.src;
-
-  document.querySelectorAll("#avatarList img")
-    .forEach(i => i.style.border = "2px solid transparent");
-
-  img.style.border = "2px solid red";
-
-  // lưu local
+  document.getElementById("navAvatar").src = img.src;
   localStorage.setItem("avatar", img.src);
 }
 
-// lưu tên
 window.saveName = function() {
   let user = auth.currentUser;
   let name = document.getElementById("displayName").value;
@@ -197,38 +209,45 @@ window.saveName = function() {
   updateProfile(user, { displayName: name })
     .then(() => {
       document.getElementById("msg").innerText = "✅ Đã cập nhật!";
-    })
-    .catch(err => {
-      document.getElementById("msg").innerText = err.message;
+      document.getElementById("userName").innerText = name;
+      document.getElementById("navName").innerText = name;
     });
 }
 
-// đổi mật khẩu
-window.changePassword = function() {
+window.changePassword = async function() {
   let user = auth.currentUser;
+  let oldPass = document.getElementById("oldPass").value;
   let newPass = document.getElementById("newPass").value;
 
-  updatePassword(user, newPass)
-    .then(() => {
-      document.getElementById("msg").innerText = "✅ Thành công!";
-    })
-    .catch(() => {
-      document.getElementById("msg").innerText = "❌ Cần đăng nhập lại!";
-    });
+  try {
+    const credential = EmailAuthProvider.credential(user.email, oldPass);
+    await reauthenticateWithCredential(user, credential);
+    await updatePassword(user, newPass);
+
+    document.getElementById("msg").innerText = "✅ Đổi mật khẩu thành công!";
+  } catch (err) {
+    if (err.code === "auth/wrong-password") {
+      document.getElementById("msg").innerText = "❌ Sai mật khẩu cũ!";
+    } else {
+      document.getElementById("msg").innerText = err.message;
+    }
+  }
 }
 
-// load user
 onAuthStateChanged(auth, user => {
   if (!user) {
     window.location.href = "index.html";
   } else {
     document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("userName").innerText = user.displayName || "User";
     document.getElementById("displayName").value = user.displayName || "";
 
-    // load avatar đã chọn
-    let saved = localStorage.getItem("avatar");
-    if (saved) {
-      document.getElementById("avatar").src = saved;
+    document.getElementById("navName").innerText = user.displayName || "User";
+
+    let avatar = localStorage.getItem("avatar");
+    if (avatar) {
+      document.getElementById("avatar").src = avatar;
+      document.getElementById("navAvatar").src = avatar;
     }
   }
 });
