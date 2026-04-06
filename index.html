@@ -114,9 +114,18 @@ window.register = function() {
     .then(() => {
       document.getElementById("error").innerText = "✅ Đăng ký thành công!";
     })
-    .catch(err => {
+      .catch(err => {
+    if (err.code === "auth/wrong-password") {
+      document.getElementById("error").innerText = "❌ Sai mật khẩu!";
+    } else if (err.code === "auth/user-not-found") {
+      document.getElementById("error").innerText = "❌ Email không tồn tại!";
+    } else if (err.code === "auth/too-many-requests") {
+      document.getElementById("error").innerText =
+        "🚫 Bạn nhập sai quá nhiều lần. Vui lòng thử lại sau!";
+    } else {
       document.getElementById("error").innerText = err.message;
-    });
+    }
+  });
 }
 
 // đăng nhập
