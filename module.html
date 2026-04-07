@@ -9,7 +9,7 @@ body {
     margin: 0;
     background: black;
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     overflow: hidden;
     background-image: url('https://c.pxhere.com/photos/39/83/astronomy_constellation_dark_galaxy_night_night_sky_orion_space-1563485.jpg!d');
     background-size: cover;
@@ -33,8 +33,7 @@ h2 { text-align: center; }
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHiTs_vwFJ9RjqFIzYS8NjQlhOckrzsiIfDw&s');
-    background-size: cover;
+    background: orange;
     box-shadow: 0 0 40px orange;
 }
 
@@ -42,15 +41,15 @@ h2 { text-align: center; }
     position: fixed;
     top: 15px;
     left: 15px;
-    padding: 10px 15px;
+    padding: 10px;
     background: #00c6ff;
     border: none;
-    border-radius: 6px;
     color: white;
     cursor: pointer;
     z-index: 999;
 }
 
+/* ORBIT */
 .o {
     position: absolute;
     top: 50%;
@@ -58,20 +57,31 @@ h2 { text-align: center; }
     transform: translate(-50%, -50%);
     border: 1px dashed rgba(255,255,255,0.2);
     border-radius: 50%;
+    pointer-events: none; /* 🔥 không chặn click */
+}
+
+.orbit {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     animation: rotate linear infinite;
 }
 
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* PLANET */
 .planet {
     position: absolute;
     top: 50%;
     left: 100%;
     transform: translate(-50%, -50%);
-    width: 3vmin;
-    height: 3vmin;
-    cursor: pointer;
     border-radius: 50%;
     overflow: hidden;
-    z-index: 10;
+    cursor: pointer;
+    pointer-events: auto;
 }
 
 .planet img {
@@ -81,14 +91,10 @@ h2 { text-align: center; }
 }
 
 .planet:hover {
-    transform: translate(-50%, -50%) scale(1.8);
+    transform: translate(-50%, -50%) scale(1.5);
 }
 
-@keyframes rotate {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
+/* OVERLAY */
 .overlay {
     position: fixed;
     width: 100%;
@@ -107,17 +113,10 @@ h2 { text-align: center; }
     background: #111;
     padding: 20px;
     border-radius: 10px;
-    max-height: 90vh;
-    overflow-y: auto;
 }
 
 .planet-page { display: none; }
 .planet-page.active { display: block; }
-
-button {
-    margin-top: 20px;
-    padding: 10px;
-}
 </style>
 </head>
 
@@ -128,20 +127,61 @@ button {
 <h2>Hệ Mặt Trời</h2>
 
 <div class="solar-container">
+
 <div class="sun"></div>
 
 <!-- 8 hành tinh -->
-<div class="o" style="width:18vmin;height:18vmin;animation-duration:20s;"><div class="planet" onclick="openOverlay('mercury')"><img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg"></div></div>
-<div class="o" style="width:26vmin;height:26vmin;animation-duration:30s;"><div class="planet" onclick="openOverlay('venus')"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg"></div></div>
-<div class="o" style="width:34vmin;height:34vmin;animation-duration:40s;"><div class="planet" onclick="openOverlay('earth')"><img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"></div></div>
-<div class="o" style="width:42vmin;height:42vmin;animation-duration:50s;"><div class="planet" onclick="openOverlay('mars')"><img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg"></div></div>
-<div class="o" style="width:52vmin;height:52vmin;animation-duration:70s;"><div class="planet" onclick="openOverlay('jupiter')"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg"></div></div>
-<div class="o" style="width:62vmin;height:62vmin;animation-duration:90s;"><div class="planet" onclick="openOverlay('saturn')"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg"></div></div>
-<div class="o" style="width:72vmin;height:72vmin;animation-duration:110s;"><div class="planet" onclick="openOverlay('uranus')"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"></div></div>
-<div class="o" style="width:82vmin;height:82vmin;animation-duration:130s;"><div class="planet" onclick="openOverlay('neptune')"><img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg"></div></div>
+<div class="o" style="width:18vmin;height:18vmin;">
+<div class="orbit" style="animation-duration:20s;">
+<div class="planet" style="width:2vmin;height:2vmin;" onclick="openOverlay('mercury')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg">
+</div></div></div>
+
+<div class="o" style="width:26vmin;height:26vmin;">
+<div class="orbit" style="animation-duration:30s;">
+<div class="planet" style="width:3vmin;height:3vmin;" onclick="openOverlay('venus')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg">
+</div></div></div>
+
+<div class="o" style="width:34vmin;height:34vmin;">
+<div class="orbit" style="animation-duration:40s;">
+<div class="planet" style="width:3.2vmin;height:3.2vmin;" onclick="openOverlay('earth')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg">
+</div></div></div>
+
+<div class="o" style="width:42vmin;height:42vmin;">
+<div class="orbit" style="animation-duration:50s;">
+<div class="planet" style="width:2.5vmin;height:2.5vmin;" onclick="openOverlay('mars')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg">
+</div></div></div>
+
+<div class="o" style="width:52vmin;height:52vmin;">
+<div class="orbit" style="animation-duration:70s;">
+<div class="planet" style="width:6vmin;height:6vmin;" onclick="openOverlay('jupiter')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg">
+</div></div></div>
+
+<div class="o" style="width:62vmin;height:62vmin;">
+<div class="orbit" style="animation-duration:90s;">
+<div class="planet" style="width:5.5vmin;height:5.5vmin;" onclick="openOverlay('saturn')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg">
+</div></div></div>
+
+<div class="o" style="width:72vmin;height:72vmin;">
+<div class="orbit" style="animation-duration:110s;">
+<div class="planet" style="width:4.5vmin;height:4.5vmin;" onclick="openOverlay('uranus')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg">
+</div></div></div>
+
+<div class="o" style="width:82vmin;height:82vmin;">
+<div class="orbit" style="animation-duration:130s;">
+<div class="planet" style="width:4.3vmin;height:4.3vmin;" onclick="openOverlay('neptune')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg">
+</div></div></div>
 
 </div>
 
+<!-- OVERLAY -->
 <div id="overlay" class="overlay">
 <div class="overlay-content">
 
@@ -154,12 +194,12 @@ button {
 <div id="uranus-page" class="planet-page"><h1>Sao Thiên Vương</h1></div>
 <div id="neptune-page" class="planet-page"><h1>Sao Hải Vương</h1></div>
 
-<button onclick="closeOverlay()">Quay lại</button>
+<button onclick="closeOverlay()">Đóng</button>
 
 </div>
 </div>
 
-<!-- FIREBASE FIX -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
@@ -176,16 +216,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-let checked = false;
-
 onAuthStateChanged(auth, user => {
-  if (checked) return;
-  checked = true;
-
   if (!user) {
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 500);
+    window.location.href = "index.html";
   }
 });
 </script>
