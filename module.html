@@ -157,15 +157,78 @@ planets.forEach(p => {
 </div>
 
 <script>
-const info = {
- mercury:"Sao Thủy - gần Mặt Trời nhất 🔥",
- venus:"Sao Kim - nóng nhất 🌡️",
- earth:"Trái Đất - sự sống 🌍",
- mars:"Sao Hỏa - hành tinh đỏ 🔴",
- jupiter:"Sao Mộc - lớn nhất 🪐",
- saturn:"Sao Thổ - có vành 💍",
- uranus:"Thiên Vương - nghiêng 😵",
- neptune:"Hải Vương - xa nhất 🌊"
+const data = {
+ mercury: {
+  name: "Sao Thủy",
+  img: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg",
+  info: [
+    "Đường kính: 4.879 km",
+    "Khoảng cách tới Mặt Trời: 57,9 triệu km",
+    "Chu kỳ quay: 88 ngày"
+  ]
+ },
+ venus: {
+  name: "Sao Kim",
+  img: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg",
+  info: [
+    "Đường kính: 12.104 km",
+    "Khoảng cách: 108 triệu km",
+    "Chu kỳ quay: 225 ngày"
+  ]
+ },
+ earth: {
+  name: "Trái Đất",
+  img: "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg",
+  info: [
+    "Đường kính: 12.742 km",
+    "Khoảng cách: 149,6 triệu km",
+    "Chu kỳ quay: 365 ngày"
+  ]
+ },
+ mars: {
+  name: "Sao Hỏa",
+  img: "https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg",
+  info: [
+    "Đường kính: 6.779 km",
+    "Khoảng cách: 227 triệu km",
+    "Chu kỳ quay: 687 ngày"
+  ]
+ },
+ jupiter: {
+  name: "Sao Mộc",
+  img: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg",
+  info: [
+    "Đường kính: 139.820 km",
+    "Khoảng cách: 778 triệu km",
+    "Chu kỳ quay: 12 năm"
+  ]
+ },
+ saturn: {
+  name: "Sao Thổ",
+  img: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg",
+  info: [
+    "Đường kính: 116.460 km",
+    "Khoảng cách: 1,4 tỷ km",
+    "Chu kỳ quay: 29 năm"
+  ]
+ },
+ uranus: {
+  name: "Sao Thiên Vương",
+  img: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg",
+  info: [
+    "Đường kính: 50.724 km",
+    "Khoảng cách: 2,9 tỷ km",
+    "Chu kỳ quay: 84 năm"
+  ]
+ },
+ neptune: {
+  name: "Sao Hải Vương",
+  img: "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg",
+  info: [
+    "Đường kính: 49.244 km",
+    "Khoảng cách: 4,5 tỷ km",
+    "Chu kỳ quay: 165 năm"
+  ]
 };
 
 function openPlanet(name){
