@@ -2,40 +2,29 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Hệ Mặt Trời Pro Max</title>
+<title>Hệ Mặt Trời Fix Chuẩn</title>
 
 <style>
 body {
     margin: 0;
     background: black;
     color: white;
-    font-family: Arial;
     overflow: hidden;
+    font-family: Arial;
 }
 
-/* nền sao */
-body::before {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(white 1px, transparent 1px);
-    background-size: 3px 3px;
-    opacity: 0.2;
-}
-
-/* HOME BUTTON */
+/* HOME */
 .home-btn {
     position: fixed;
     top: 15px;
     left: 15px;
-    padding: 10px 15px;
+    z-index: 9999;
+    padding: 10px;
     background: #00c6ff;
     border: none;
     border-radius: 10px;
     color: white;
     cursor: pointer;
-    z-index: 9999;
 }
 
 /* SUN */
@@ -59,6 +48,7 @@ body::before {
     border: 1px dashed rgba(255,255,255,0.2);
     border-radius: 50%;
     transform: translate(-50%, -50%);
+    pointer-events: none; /* 🔥 FIX */
 }
 
 /* SPIN */
@@ -81,15 +71,13 @@ body::before {
     left: 100%;
     transform: translate(-50%, -50%);
     cursor: pointer;
+    pointer-events: auto; /* 🔥 FIX */
+    z-index: 10;
 }
 
 .planet img {
     border-radius: 50%;
-    transition: 0.3s;
-}
-
-.planet:hover img {
-    transform: scale(1.3);
+    display: block;
 }
 
 /* OVERLAY */
@@ -107,19 +95,13 @@ body::before {
     background: #111;
     padding: 20px;
     border-radius: 15px;
-    width: 350px;
+    width: 300px;
     text-align: center;
-    animation: zoom 0.3s ease;
-}
-
-@keyframes zoom {
-    from { transform: scale(0.6); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
 }
 
 button {
     margin-top: 10px;
-    padding: 8px 12px;
+    padding: 8px;
     border: none;
     background: #00c6ff;
     color: white;
@@ -135,17 +117,17 @@ button {
 
 <div class="sun"></div>
 
-<!-- PLANETS -->
+<!-- PLANETS (ảnh fix cứng, không lỗi nữa) -->
 <script>
 const planets = [
- {name:"mercury", size:20, orbit:120, speed:8},
- {name:"venus", size:25, orbit:160, speed:12},
- {name:"earth", size:28, orbit:200, speed:15},
- {name:"mars", size:22, orbit:240, speed:18},
- {name:"jupiter", size:50, orbit:300, speed:25},
- {name:"saturn", size:45, orbit:360, speed:30},
- {name:"uranus", size:35, orbit:420, speed:35},
- {name:"neptune", size:33, orbit:480, speed:40},
+ {name:"mercury", size:20, orbit:120, speed:8, img:"https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg"},
+ {name:"venus", size:25, orbit:160, speed:12, img:"https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg"},
+ {name:"earth", size:28, orbit:200, speed:15, img:"https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"},
+ {name:"mars", size:22, orbit:240, speed:18, img:"https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg"},
+ {name:"jupiter", size:50, orbit:300, speed:25, img:"https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg"},
+ {name:"saturn", size:45, orbit:360, speed:30, img:"https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg"},
+ {name:"uranus", size:35, orbit:420, speed:35, img:"https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"},
+ {name:"neptune", size:33, orbit:480, speed:40, img:"https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg"},
 ];
 
 planets.forEach(p => {
@@ -160,7 +142,7 @@ planets.forEach(p => {
 
     const planet = document.createElement("div");
     planet.className = "planet";
-    planet.innerHTML = `<img src="https://source.unsplash.com/100x100/?${p.name},planet" width="${p.size}">`;
+    planet.innerHTML = `<img src="${p.img}" width="${p.size}">`;
     planet.onclick = () => openPlanet(p.name);
 
     spin.appendChild(planet);
@@ -176,27 +158,22 @@ planets.forEach(p => {
 
 <script>
 const info = {
- mercury:"Gần Mặt Trời nhất 🔥",
- venus:"Nóng nhất hệ 🌡️",
- earth:"Hành tinh sự sống 🌍",
- mars:"Hành tinh đỏ 🔴",
- jupiter:"Lớn nhất 🪐",
- saturn:"Có vành đai 💍",
- uranus:"Nghiêng 98° 😵",
- neptune:"Xa nhất 🌊"
+ mercury:"Sao Thủy - gần Mặt Trời nhất 🔥",
+ venus:"Sao Kim - nóng nhất 🌡️",
+ earth:"Trái Đất - sự sống 🌍",
+ mars:"Sao Hỏa - hành tinh đỏ 🔴",
+ jupiter:"Sao Mộc - lớn nhất 🪐",
+ saturn:"Sao Thổ - có vành 💍",
+ uranus:"Thiên Vương - nghiêng 😵",
+ neptune:"Hải Vương - xa nhất 🌊"
 };
 
 function openPlanet(name){
-    const overlay = document.getElementById("overlay");
-    const card = document.getElementById("card");
-
-    card.innerHTML = `
-        <h2>${name.toUpperCase()}</h2>
-        <p>${info[name]}</p>
+    document.getElementById("overlay").style.display = "flex";
+    document.getElementById("card").innerHTML = `
+        <h2>${info[name]}</h2>
         <button onclick="closeOverlay()">Đóng</button>
     `;
-
-    overlay.style.display = "flex";
 }
 
 function closeOverlay(){
@@ -208,7 +185,7 @@ function goHome(){
 }
 </script>
 
-<!-- FIREBASE CHECK -->
+<!-- FIREBASE GIỮ NGUYÊN -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
