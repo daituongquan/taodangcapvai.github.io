@@ -195,15 +195,26 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/fireba
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 const app = initializeApp({
-  apiKey: "AIza...",
+  apiKey: "AIzaSyDaz1AZHFulAGimlsg98v-jk9mCsjE45Vw",
   authDomain: "password-webtaodangcapvai.firebaseapp.com",
   projectId: "password-webtaodangcapvai"
 });
 
 const auth = getAuth(app);
 
+let checked = false;
+
 onAuthStateChanged(auth, user => {
-  if (!user) window.location.href = "index.html";
+
+  if (checked) return;
+  checked = true;
+
+  if (!user) {
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 500);
+  }
+
 });
 </script>
 
