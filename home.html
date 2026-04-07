@@ -164,6 +164,7 @@ button.save {
     <button onclick="showPage('about')">Giới thiệu</button>
     <button onclick="showPage('contact')">Liên hệ</button>
     <button onclick="showPage('profile')">Profile</button>
+    <button onclick="goPage2()">🌌 Hệ Mặt Trời</button>
   </div>
 
   <div style="display:flex; align-items:center; gap:15px;">
@@ -259,7 +260,9 @@ window.showPage = function(pageId) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(pageId).classList.add("active");
 }
-
+window.goPage2 = function() {
+  window.location.href = "module.html"; // tên file của bạn
+}
 window.logout = function() {
   signOut(auth).then(() => window.location.href = "index.html");
 }
