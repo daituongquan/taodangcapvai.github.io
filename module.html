@@ -38,7 +38,6 @@ h2 { text-align: center; }
     box-shadow: 0 0 40px orange;
 }
 
-/* HOME BUTTON */
 .home-btn {
     position: fixed;
     top: 15px;
@@ -52,7 +51,6 @@ h2 { text-align: center; }
     z-index: 999;
 }
 
-/* ORBIT */
 .o {
     position: absolute;
     top: 50%;
@@ -63,17 +61,17 @@ h2 { text-align: center; }
     animation: rotate linear infinite;
 }
 
-/* PLANET */
 .planet {
     position: absolute;
     top: 50%;
-    right: -2vmin;
-    transform: translateY(-50%);
+    left: 100%;
+    transform: translate(-50%, -50%);
     width: 3vmin;
     height: 3vmin;
     cursor: pointer;
     border-radius: 50%;
     overflow: hidden;
+    z-index: 10;
 }
 
 .planet img {
@@ -83,16 +81,14 @@ h2 { text-align: center; }
 }
 
 .planet:hover {
-    transform: translateY(-50%) scale(1.8);
+    transform: translate(-50%, -50%) scale(1.8);
 }
 
-/* FIX QUAY */
 @keyframes rotate {
     from { transform: translate(-50%, -50%) rotate(0deg); }
     to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* OVERLAY */
 .overlay {
     position: fixed;
     width: 100%;
@@ -115,7 +111,6 @@ h2 { text-align: center; }
     overflow-y: auto;
 }
 
-/* PAGE */
 .planet-page { display: none; }
 .planet-page.active { display: block; }
 
@@ -133,63 +128,38 @@ button {
 <h2>Hệ Mặt Trời</h2>
 
 <div class="solar-container">
-    <div class="sun"></div>
+<div class="sun"></div>
 
-    <div class="o" style="width:18vmin;height:18vmin;animation-duration:20s;">
-        <div class="planet" onclick="openOverlay('mercury')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg">
-        </div>
-    </div>
+<!-- 8 hành tinh -->
+<div class="o" style="width:18vmin;height:18vmin;animation-duration:20s;"><div class="planet" onclick="openOverlay('mercury')"><img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg"></div></div>
+<div class="o" style="width:26vmin;height:26vmin;animation-duration:30s;"><div class="planet" onclick="openOverlay('venus')"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg"></div></div>
+<div class="o" style="width:34vmin;height:34vmin;animation-duration:40s;"><div class="planet" onclick="openOverlay('earth')"><img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"></div></div>
+<div class="o" style="width:42vmin;height:42vmin;animation-duration:50s;"><div class="planet" onclick="openOverlay('mars')"><img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg"></div></div>
+<div class="o" style="width:52vmin;height:52vmin;animation-duration:70s;"><div class="planet" onclick="openOverlay('jupiter')"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg"></div></div>
+<div class="o" style="width:62vmin;height:62vmin;animation-duration:90s;"><div class="planet" onclick="openOverlay('saturn')"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg"></div></div>
+<div class="o" style="width:72vmin;height:72vmin;animation-duration:110s;"><div class="planet" onclick="openOverlay('uranus')"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"></div></div>
+<div class="o" style="width:82vmin;height:82vmin;animation-duration:130s;"><div class="planet" onclick="openOverlay('neptune')"><img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg"></div></div>
 
-    <div class="o" style="width:26vmin;height:26vmin;animation-duration:30s;">
-        <div class="planet" onclick="openOverlay('venus')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg">
-        </div>
-    </div>
-
-    <div class="o" style="width:34vmin;height:34vmin;animation-duration:40s;">
-        <div class="planet" onclick="openOverlay('earth')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg">
-        </div>
-    </div>
-
-    <div class="o" style="width:42vmin;height:42vmin;animation-duration:50s;">
-        <div class="planet" onclick="openOverlay('mars')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg">
-        </div>
-    </div>
 </div>
 
-<!-- OVERLAY -->
 <div id="overlay" class="overlay">
 <div class="overlay-content">
 
-<div id="mercury-page" class="planet-page">
-<h1>Sao Thủy</h1>
-<p>Hành tinh gần Mặt Trời nhất.</p>
-</div>
-
-<div id="venus-page" class="planet-page">
-<h1>Sao Kim</h1>
-<p>Hành tinh nóng nhất.</p>
-</div>
-
-<div id="earth-page" class="planet-page">
-<h1>Trái Đất</h1>
-<p>Hành tinh có sự sống.</p>
-</div>
-
-<div id="mars-page" class="planet-page">
-<h1>Sao Hỏa</h1>
-<p>Hành tinh đỏ.</p>
-</div>
+<div id="mercury-page" class="planet-page active"><h1>Sao Thủy</h1></div>
+<div id="venus-page" class="planet-page"><h1>Sao Kim</h1></div>
+<div id="earth-page" class="planet-page"><h1>Trái Đất</h1></div>
+<div id="mars-page" class="planet-page"><h1>Sao Hỏa</h1></div>
+<div id="jupiter-page" class="planet-page"><h1>Sao Mộc</h1></div>
+<div id="saturn-page" class="planet-page"><h1>Sao Thổ</h1></div>
+<div id="uranus-page" class="planet-page"><h1>Sao Thiên Vương</h1></div>
+<div id="neptune-page" class="planet-page"><h1>Sao Hải Vương</h1></div>
 
 <button onclick="closeOverlay()">Quay lại</button>
 
 </div>
 </div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE FIX -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
@@ -204,11 +174,11 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 let checked = false;
 
 onAuthStateChanged(auth, user => {
-
   if (checked) return;
   checked = true;
 
@@ -217,7 +187,6 @@ onAuthStateChanged(auth, user => {
       window.location.href = "index.html";
     }, 500);
   }
-
 });
 </script>
 
