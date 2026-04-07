@@ -2,7 +2,343 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<title>Trang chủ</title><!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
 <title>Trang chủ</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  transition: 0.3s;
+}
+
+/* NAVBAR */
+.navbar {
+  background: #1e3c72;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+}
+
+.menu button {
+  background: none;
+  border: none;
+  color: white;
+  margin: 0 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* USER NAV */
+.user-box {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.user-box img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* DARK BUTTON */
+#darkBtn {
+  border: none;
+  background: white;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* DARK MODE */
+.dark {
+  background: #121212;
+  color: white;
+}
+
+.dark .navbar {
+  background: #0a1f44;
+}
+
+.dark .profile-box {
+  background: #1e1e1e;
+}
+
+/* PAGE */
+.page {
+  display: none;
+  padding: 30px;
+}
+
+.active {
+  display: block;
+}
+
+/* PROFILE CENTER FIX */
+#profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* PROFILE BOX */
+.profile-box {
+  background: #f5f5f5;
+  padding: 25px;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+/* INPUT FIX FULL */
+.input-box {
+  position: relative;
+  width: 100%;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 10px 40px 10px 10px; /* chừa chỗ icon */
+  margin: 8px 0;
+  box-sizing: border-box; /* FIX TRÀN */
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  position: relative;
+  z-index: 1;
+}
+
+.input-box span {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+  z-index: 2; /* FIX CLICK */
+}
+
+/* BUTTON */
+button.save {
+  background: #00c6ff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.logout {
+  background: #ff4d4d;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+/* AVATAR */
+#avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid #00c6ff;
+}
+
+#avatarList img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 5px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="menu">
+    <button onclick="showPage('home')">Trang chủ</button>
+    <button onclick="showPage('about')">Giới thiệu</button>
+    <button onclick="showPage('contact')">Liên hệ</button>
+    <button onclick="showPage('profile')">Profile</button>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:15px;">
+    <button onclick="toggleDark()" id="darkBtn">🌙</button>
+
+    <div class="user-box" onclick="showPage('profile')">
+      <img id="navAvatar" src="images/avatar1.png">
+      <span id="navName">User</span>
+    </div>
+  </div>
+</div>
+
+<div id="home" class="page active">
+  <h1>🏠 Trang chủ</h1>
+</div>
+
+<div id="about" class="page">
+  <h1>📖 Giới thiệu</h1>
+</div>
+
+<div id="contact" class="page">
+  <h1>📞 Liên hệ</h1>
+</div>
+
+<div id="profile" class="page">
+  <div class="profile-box">
+    <h2>👤 Hồ sơ</h2>
+
+    <img id="avatar" src="images/avatar1.png">
+
+    <p><b>Tên:</b> <span id="userName"></span></p>
+    <p><b>Email:</b> <span id="userEmail"></span></p>
+
+    <h3>Đổi tên</h3>
+    <input id="displayName" placeholder="Tên hiển thị">
+    <button class="save" onclick="saveName()">Lưu tên</button>
+
+    <h3>Chọn avatar</h3>
+    <div id="avatarList">
+      <img src="images/avatar1.png" onclick="selectAvatar(this)">
+      <img src="images/avatar2.png" onclick="selectAvatar(this)">
+      <img src="images/avatar3.png" onclick="selectAvatar(this)">
+      <img src="images/avatar4.png" onclick="selectAvatar(this)">
+    </div>
+
+    <h3>Đổi mật khẩu</h3>
+
+    <div class="input-box">
+      <input id="oldPass" type="password" placeholder="Mật khẩu cũ">
+      <span onclick="togglePass('oldPass', this)">👁️</span>
+    </div>
+
+    <div class="input-box">
+      <input id="newPass" type="password" placeholder="Mật khẩu mới">
+      <span onclick="togglePass('newPass', this)">👁️</span>
+    </div>
+
+    <button class="save" onclick="changePassword()">Đổi mật khẩu</button>
+
+    <p id="msg"></p>
+
+    <button class="logout" onclick="logout()">Đăng xuất</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import {
+  getAuth,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDaz1AZHFulAGimlsg98v-jk9mCsjE45Vw",
+  authDomain: "password-webtaodangcapvai.firebaseapp.com",
+  projectId: "password-webtaodangcapvai"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.showPage = function(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
+}
+
+window.logout = function() {
+  signOut(auth).then(() => window.location.href = "index.html");
+}
+
+window.selectAvatar = function(img) {
+  document.getElementById("avatar").src = img.src;
+  document.getElementById("navAvatar").src = img.src;
+  localStorage.setItem("avatar", img.src);
+}
+
+window.saveName = function() {
+  let user = auth.currentUser;
+  let name = document.getElementById("displayName").value;
+
+  updateProfile(user, { displayName: name }).then(() => {
+    document.getElementById("msg").innerText = "✅ Đã cập nhật!";
+    document.getElementById("userName").innerText = name;
+    document.getElementById("navName").innerText = name;
+  });
+}
+
+window.togglePass = function(id, el) {
+  let input = document.getElementById(id);
+
+  if (input.type === "password") {
+    input.type = "text";
+    el.innerText = "🙈";
+  } else {
+    input.type = "password";
+    el.innerText = "👁️";
+  }
+}
+
+window.changePassword = async function() {
+  let user = auth.currentUser;
+  let oldPass = document.getElementById("oldPass").value;
+  let newPass = document.getElementById("newPass").value;
+
+  try {
+    const credential = EmailAuthProvider.credential(user.email, oldPass);
+    await reauthenticateWithCredential(user, credential);
+    await updatePassword(user, newPass);
+
+    document.getElementById("msg").innerText = "✅ Thành công!";
+  } catch {
+    document.getElementById("msg").innerText = "❌ Sai mật khẩu!";
+  }
+}
+
+window.toggleDark = function() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+}
+
+onAuthStateChanged(auth, user => {
+  if (!user) { window.location.href = "index.html";}
+  else {
+    document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("userName").innerText = user.displayName || "User";
+    document.getElementById("displayName").value = user.displayName || "";
+
+    document.getElementById("navName").innerText = user.displayName || "User";
+
+  let avatar = localStorage.getItem("avatar");
+  if (avatar) {
+    document.getElementById("avatar").src = avatar;
+    document.getElementById("navAvatar").src = avatar;
+  }
+
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+  }
+});
+</script>
+
+</body>
+</html>
 
 <style>
 body {<script type="module">
