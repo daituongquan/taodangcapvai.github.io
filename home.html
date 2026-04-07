@@ -76,8 +76,8 @@ body {
   display: block;
 }
 
-/* PROFILE CENTER FIX */
-#profile {
+/* FIX PROFILE (quan trọng) */
+#profile.active {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -104,13 +104,17 @@ body {
   padding: 10px;
   padding-right: 40px;
   margin: 8px 0;
+  box-sizing: border-box; /* FIX tràn */
 }
 
-.input-box span {
+/* FIX nút mắt */
+.input-box button {
   position: absolute;
-  right: 10px;
+  right: 5px;
   top: 50%;
   transform: translateY(-50%);
+  border: none;
+  background: none;
   cursor: pointer;
 }
 
@@ -209,12 +213,12 @@ button.save {
 
     <div class="input-box">
       <input id="oldPass" type="password" placeholder="Mật khẩu cũ">
-      <span onclick="togglePass('oldPass', this)">👁</span>
+      <button type="button" onclick="togglePass('oldPass', this)">👁</button>
     </div>
 
     <div class="input-box">
       <input id="newPass" type="password" placeholder="Mật khẩu mới">
-      <span onclick="togglePass('newPass', this)">👁</span>
+      <button type="button" onclick="togglePass('newPass', this)">👁</button>
     </div>
 
     <button class="save" onclick="changePassword()">Đổi mật khẩu</button>
@@ -277,10 +281,10 @@ window.togglePass = function(id, el) {
 
   if (input.type === "password") {
     input.type = "text";
-    el.innerText = "🙈";
+    el.textContent = "🙈";
   } else {
     input.type = "password";
-    el.innerText = "👁";
+    el.textContent = "👁";
   }
 }
 
@@ -311,20 +315,20 @@ onAuthStateChanged(auth, user => {
     document.getElementById("userEmail").innerText = user.email;
     document.getElementById("userName").innerText = user.displayName || "User";
     document.getElementById("displayName").value = user.displayName || "";
-
     document.getElementById("navName").innerText = user.displayName || "User";
 
-  let avatar = localStorage.getItem("avatar");
-  if (avatar) {
-    document.getElementById("avatar").src = avatar;
-    document.getElementById("navAvatar").src = avatar;
-  }
+    let avatar = localStorage.getItem("avatar");
+    if (avatar) {
+      document.getElementById("avatar").src = avatar;
+      document.getElementById("navAvatar").src = avatar;
+    }
 
-  if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
+    if (localStorage.getItem("darkMode") === "true") {
+      document.body.classList.add("dark");
+    }
   }
 });
 </script>
 
 </body>
-</html> 
+</html>
