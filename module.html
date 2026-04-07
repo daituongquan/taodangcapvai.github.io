@@ -94,7 +94,7 @@ h2 { text-align: center; }
     transform: translate(-50%, -50%) scale(1.5);
 }
 
-/* OVERLAY */
+/* OVERLAY FIX */
 .overlay {
     position: fixed;
     width: 100%;
@@ -103,10 +103,7 @@ h2 { text-align: center; }
     display: none;
     justify-content: center;
     align-items: center;
-}
-
-.overlay.active {
-    display: flex;
+    z-index: 9999; /* 🔥 FIX QUAN TRỌNG */
 }
 
 .overlay-content {
@@ -116,10 +113,10 @@ h2 { text-align: center; }
     max-width: 500px;
 }
 
-/* FIX */
-.planet-page { display: none; }
-.planet-page.active { display: block; }
-.overlay .planet-page.active { display: block !important; }
+/* FIX HIỂN THỊ */
+.planet-page {
+    display: none;
+}
 </style>
 </head>
 
@@ -169,39 +166,31 @@ h2 { text-align: center; }
 </div>
 </div>
 
+<!-- SCRIPT FIX -->
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+window.goHome = function() {
+    window.location.href = "home.html";
+}
 
-    window.goHome = function() {
-        window.location.href = "home.html";
+window.openOverlay = function(name) {
+    const overlay = document.getElementById("overlay");
+
+    overlay.style.display = "flex"; // 🔥 FIX CHÍNH
+
+    document.querySelectorAll(".planet-page").forEach(p => {
+        p.style.display = "none";
+    });
+
+    const page = document.getElementById(name + "-page");
+
+    if (page) {
+        page.style.display = "block";
     }
+}
 
-    window.openOverlay = function(name) {
-        const overlay = document.getElementById("overlay");
-        overlay.classList.add("active");
-
-        document.querySelectorAll(".planet-page").forEach(p => {
-            p.classList.remove("active");
-            p.style.display = "none";
-        });
-
-        const page = document.getElementById(name + "-page");
-
-        if (page) {
-            page.classList.add("active");
-            page.style.display = "block";
-        }
-    }
-
-    window.closeOverlay = function() {
-        document.getElementById("overlay").classList.remove("active");
-
-        document.querySelectorAll(".planet-page").forEach(p => {
-            p.style.display = "none";
-        });
-    }
-
-});
+window.closeOverlay = function() {
+    document.getElementById("overlay").style.display = "none";
+}
 </script>
 
 <!-- FIREBASE -->
