@@ -157,7 +157,7 @@ planets.forEach(p => {
 </div>
 
 <script>
-const info = {
+const data = {
  mercury: {
   name: "Sao Thủy",
   img: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg",
@@ -232,13 +232,19 @@ const info = {
 };
 
 function openPlanet(name){
+    const p = data[name];
+
     document.getElementById("overlay").style.display = "flex";
+
     document.getElementById("card").innerHTML = `
-        <h2>${info[name]}</h2>
+        <h2>${p.name}</h2>
+        <img src="${p.img}" style="width:120px;border-radius:50%;margin:10px 0;">
+        <ul style="text-align:left">
+            ${p.info.map(i => `<li>${i}</li>`).join("")}
+        </ul>
         <button onclick="closeOverlay()">Đóng</button>
     `;
 }
-
 function closeOverlay(){
     document.getElementById("overlay").style.display = "none";
 }
