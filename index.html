@@ -148,9 +148,16 @@ window.login = function() {
 }
 
 // nếu đã login → tự vào home
+let isChecking = true;
+
 onAuthStateChanged(auth, user => {
-  if (user) {
-    window.location.href = "home.html";
+  if (isChecking) {
+    isChecking = false;
+
+    if (user) {
+      console.log("Đã login:", user.email);
+      window.location.href = "home.html";
+    }
   }
 });
 </script>
