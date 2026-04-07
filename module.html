@@ -103,7 +103,8 @@ h2 { text-align: center; }
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* 🔥 FIX QUAN TRỌNG */
+    flex-direction: column; /* 🔥 FIX */
+    z-index: 9999;
 }
 
 .overlay-content {
@@ -111,11 +112,14 @@ h2 { text-align: center; }
     padding: 20px;
     border-radius: 10px;
     max-width: 500px;
+    width: 80%; /* 🔥 FIX */
+    text-align: center;
 }
 
-/* FIX HIỂN THỊ */
+/* nội dung */
 .planet-page {
     display: none;
+    font-size: 20px;
 }
 </style>
 </head>
@@ -152,14 +156,14 @@ h2 { text-align: center; }
 <div id="overlay" class="overlay">
 <div class="overlay-content">
 
-<div id="mercury-page" class="planet-page"><h1>Sao Thủy</h1></div>
-<div id="venus-page" class="planet-page"><h1>Sao Kim</h1></div>
-<div id="earth-page" class="planet-page"><h1>Trái Đất</h1></div>
-<div id="mars-page" class="planet-page"><h1>Sao Hỏa</h1></div>
-<div id="jupiter-page" class="planet-page"><h1>Sao Mộc</h1></div>
-<div id="saturn-page" class="planet-page"><h1>Sao Thổ</h1></div>
-<div id="uranus-page" class="planet-page"><h1>Sao Thiên Vương</h1></div>
-<div id="neptune-page" class="planet-page"><h1>Sao Hải Vương</h1></div>
+<div id="mercury-page" class="planet-page">☿ Sao Thủy</div>
+<div id="venus-page" class="planet-page">♀ Sao Kim</div>
+<div id="earth-page" class="planet-page">🌍 Trái Đất</div>
+<div id="mars-page" class="planet-page">♂ Sao Hỏa</div>
+<div id="jupiter-page" class="planet-page">♃ Sao Mộc</div>
+<div id="saturn-page" class="planet-page">♄ Sao Thổ</div>
+<div id="uranus-page" class="planet-page">⛢ Sao Thiên Vương</div>
+<div id="neptune-page" class="planet-page">♆ Sao Hải Vương</div>
 
 <button onclick="closeOverlay()">Đóng</button>
 
@@ -174,8 +178,7 @@ window.goHome = function() {
 
 window.openOverlay = function(name) {
     const overlay = document.getElementById("overlay");
-
-    overlay.style.display = "flex"; // 🔥 FIX CHÍNH
+    overlay.style.display = "flex";
 
     document.querySelectorAll(".planet-page").forEach(p => {
         p.style.display = "none";
