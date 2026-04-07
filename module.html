@@ -160,21 +160,77 @@ planets.forEach(p => {
 document.addEventListener("DOMContentLoaded", () => {
 
 const data = {
- mercury: {
+mercury: {
   name: "Sao Thủy",
   img: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg",
-  info: ["ĐK: 4.879 km","Khoảng cách: 57,9 triệu km","Chu kỳ: 88 ngày"]
+  info: [
+    "Đường kính: 4.879 km",
+    "Khoảng cách: 57,9 triệu km",
+    "Chu kỳ: 88 ngày"
+  ]
+ },
+ venus: {
+  name: "Sao Kim",
+  img: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg",
+  info: [
+    "Đường kính: 12.104 km",
+    "Khoảng cách: 108 triệu km",
+    "Chu kỳ: 225 ngày"
+  ]
  },
  earth: {
   name: "Trái Đất",
   img: "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg",
-  info: ["ĐK: 12.742 km","Khoảng cách: 149,6 triệu km","Chu kỳ: 365 ngày"]
+  info: [
+    "Đường kính: 12.742 km",
+    "Khoảng cách: 149,6 triệu km",
+    "Chu kỳ: 365 ngày"
+  ]
+ },
+ mars: {
+  name: "Sao Hỏa",
+  img: "https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg",
+  info: [
+    "Đường kính: 6.779 km",
+    "Khoảng cách: 227 triệu km",
+    "Chu kỳ: 687 ngày"
+  ]
  },
  jupiter: {
   name: "Sao Mộc",
   img: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg",
-  info: ["ĐK: 139.820 km","Khoảng cách: 778 triệu km","Chu kỳ: 12 năm"]
- }
+  info: [
+    "Đường kính: 139.820 km",
+    "Khoảng cách: 778 triệu km",
+    "Chu kỳ: 12 năm"
+  ]
+ },
+ saturn: {
+  name: "Sao Thổ",
+  img: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg",
+  info: [
+    "Đường kính: 116.460 km",
+    "Khoảng cách: 1,4 tỷ km",
+    "Chu kỳ: 29 năm"
+  ]
+ },
+ uranus: {
+  name: "Sao Thiên Vương",
+  img: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg",
+  info: [
+    "Đường kính: 50.724 km",
+    "Khoảng cách: 2,9 tỷ km",
+    "Chu kỳ: 84 năm"
+  ]
+ },
+ neptune: {
+  name: "Sao Hải Vương",
+  img: "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg",
+  info: [
+    "Đường kính: 49.244 km",
+    "Khoảng cách: 4,5 tỷ km",
+    "Chu kỳ: 165 năm"
+  ]
 };
 
 window.openPlanet = function(name){
