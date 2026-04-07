@@ -317,22 +317,23 @@ window.toggleDark = function() {
 }
 
 onAuthStateChanged(auth, user => {
-  if (!user) { window.location.href = "index.html";}
-  else {
+  if (!user) {
+    window.location.href = "index.html";
+  } else {
     document.getElementById("userEmail").innerText = user.email;
     document.getElementById("userName").innerText = user.displayName || "User";
     document.getElementById("displayName").value = user.displayName || "";
-
     document.getElementById("navName").innerText = user.displayName || "User";
 
-  let avatar = localStorage.getItem("avatar");
-  if (avatar) {
-    document.getElementById("avatar").src = avatar;
-    document.getElementById("navAvatar").src = avatar;
-  }
+    let avatar = localStorage.getItem("avatar");
+    if (avatar) {
+      document.getElementById("avatar").src = avatar;
+      document.getElementById("navAvatar").src = avatar;
+    }
 
-  if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
+    if (localStorage.getItem("darkMode") === "true") {
+      document.body.classList.add("dark");
+    }
   }
 });
 </script>
