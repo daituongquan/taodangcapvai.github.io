@@ -57,7 +57,7 @@ h2 { text-align: center; }
     transform: translate(-50%, -50%);
     border: 1px dashed rgba(255,255,255,0.2);
     border-radius: 50%;
-    pointer-events: none; /* 🔥 không chặn click */
+    pointer-events: none;
 }
 
 .orbit {
@@ -113,6 +113,7 @@ h2 { text-align: center; }
     background: #111;
     padding: 20px;
     border-radius: 10px;
+    max-width: 500px;
 }
 
 .planet-page { display: none; }
@@ -127,65 +128,32 @@ h2 { text-align: center; }
 <h2>Hệ Mặt Trời</h2>
 
 <div class="solar-container">
-
 <div class="sun"></div>
 
-<!-- 8 hành tinh -->
-<div class="o" style="width:18vmin;height:18vmin;">
-<div class="orbit" style="animation-duration:20s;">
-<div class="planet" style="width:2vmin;height:2vmin;" onclick="openOverlay('mercury')">
-<img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg">
-</div></div></div>
+<!-- planets -->
+<div class="o" style="width:18vmin;height:18vmin;"><div class="orbit" style="animation-duration:20s;"><div class="planet" style="width:2vmin;height:2vmin;" onclick="openOverlay('mercury')"><img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg"></div></div></div>
 
-<div class="o" style="width:26vmin;height:26vmin;">
-<div class="orbit" style="animation-duration:30s;">
-<div class="planet" style="width:3vmin;height:3vmin;" onclick="openOverlay('venus')">
-<img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg">
-</div></div></div>
+<div class="o" style="width:26vmin;height:26vmin;"><div class="orbit" style="animation-duration:30s;"><div class="planet" style="width:3vmin;height:3vmin;" onclick="openOverlay('venus')"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg"></div></div></div>
 
-<div class="o" style="width:34vmin;height:34vmin;">
-<div class="orbit" style="animation-duration:40s;">
-<div class="planet" style="width:3.2vmin;height:3.2vmin;" onclick="openOverlay('earth')">
-<img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg">
-</div></div></div>
+<div class="o" style="width:34vmin;height:34vmin;"><div class="orbit" style="animation-duration:40s;"><div class="planet" style="width:3.2vmin;height:3.2vmin;" onclick="openOverlay('earth')"><img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"></div></div></div>
 
-<div class="o" style="width:42vmin;height:42vmin;">
-<div class="orbit" style="animation-duration:50s;">
-<div class="planet" style="width:2.5vmin;height:2.5vmin;" onclick="openOverlay('mars')">
-<img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg">
-</div></div></div>
+<div class="o" style="width:42vmin;height:42vmin;"><div class="orbit" style="animation-duration:50s;"><div class="planet" style="width:2.5vmin;height:2.5vmin;" onclick="openOverlay('mars')"><img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg"></div></div></div>
 
-<div class="o" style="width:52vmin;height:52vmin;">
-<div class="orbit" style="animation-duration:70s;">
-<div class="planet" style="width:6vmin;height:6vmin;" onclick="openOverlay('jupiter')">
-<img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg">
-</div></div></div>
+<div class="o" style="width:52vmin;height:52vmin;"><div class="orbit" style="animation-duration:70s;"><div class="planet" style="width:6vmin;height:6vmin;" onclick="openOverlay('jupiter')"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg"></div></div></div>
 
-<div class="o" style="width:62vmin;height:62vmin;">
-<div class="orbit" style="animation-duration:90s;">
-<div class="planet" style="width:5.5vmin;height:5.5vmin;" onclick="openOverlay('saturn')">
-<img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg">
-</div></div></div>
+<div class="o" style="width:62vmin;height:62vmin;"><div class="orbit" style="animation-duration:90s;"><div class="planet" style="width:5.5vmin;height:5.5vmin;" onclick="openOverlay('saturn')"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg"></div></div></div>
 
-<div class="o" style="width:72vmin;height:72vmin;">
-<div class="orbit" style="animation-duration:110s;">
-<div class="planet" style="width:4.5vmin;height:4.5vmin;" onclick="openOverlay('uranus')">
-<img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg">
-</div></div></div>
+<div class="o" style="width:72vmin;height:72vmin;"><div class="orbit" style="animation-duration:110s;"><div class="planet" style="width:4.5vmin;height:4.5vmin;" onclick="openOverlay('uranus')"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"></div></div></div>
 
-<div class="o" style="width:82vmin;height:82vmin;">
-<div class="orbit" style="animation-duration:130s;">
-<div class="planet" style="width:4.3vmin;height:4.3vmin;" onclick="openOverlay('neptune')">
-<img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg">
-</div></div></div>
+<div class="o" style="width:82vmin;height:82vmin;"><div class="orbit" style="animation-duration:130s;"><div class="planet" style="width:4.3vmin;height:4.3vmin;" onclick="openOverlay('neptune')"><img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg"></div></div></div>
 
 </div>
 
-<!-- OVERLAY -->
+<!-- overlay -->
 <div id="overlay" class="overlay">
 <div class="overlay-content">
 
-<div id="mercury-page" class="planet-page active"><h1>Sao Thủy</h1></div>
+<div id="mercury-page" class="planet-page"><h1>Sao Thủy</h1></div>
 <div id="venus-page" class="planet-page"><h1>Sao Kim</h1></div>
 <div id="earth-page" class="planet-page"><h1>Trái Đất</h1></div>
 <div id="mars-page" class="planet-page"><h1>Sao Hỏa</h1></div>
@@ -198,6 +166,33 @@ h2 { text-align: center; }
 
 </div>
 </div>
+
+<!-- FIX SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    window.goHome = function() {
+        window.location.href = "home.html";
+    }
+
+    window.openOverlay = function(name) {
+        const overlay = document.getElementById("overlay");
+        overlay.classList.add("active");
+
+        document.querySelectorAll(".planet-page").forEach(p => {
+            p.classList.remove("active");
+        });
+
+        const page = document.getElementById(name + "-page");
+        if (page) page.classList.add("active");
+    }
+
+    window.closeOverlay = function() {
+        document.getElementById("overlay").classList.remove("active");
+    }
+
+});
+</script>
 
 <!-- FIREBASE -->
 <script type="module">
@@ -221,22 +216,6 @@ onAuthStateChanged(auth, user => {
     window.location.href = "index.html";
   }
 });
-</script>
-
-<script>
-function goHome() {
-    window.location.href = "home.html";
-}
-
-function openOverlay(name) {
-    document.getElementById("overlay").classList.add("active");
-    document.querySelectorAll(".planet-page").forEach(p => p.classList.remove("active"));
-    document.getElementById(name + "-page").classList.add("active");
-}
-
-function closeOverlay() {
-    document.getElementById("overlay").classList.remove("active");
-}
 </script>
 
 </body>
