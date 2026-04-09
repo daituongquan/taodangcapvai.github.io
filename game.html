@@ -36,7 +36,7 @@ body {
     width: 60px;
     height: 60px;
     transform: translateX(-50%);
-    background: url('https://pngimg.com/uploads/spaceship/spaceship_PNG7.png');
+    background: url('https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -46,7 +46,7 @@ body {
     position: absolute;
     width: 50px;
     height: 50px;
-    background: url('https://pngimg.com/uploads/asteroid/asteroid_PNG18.png');
+    background: url('https://i.imgur.com/OdL0XPt.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -89,7 +89,7 @@ button {
     <div id="menu">
         <h1>🚀 Game Phi Thuyền</h1>
         <button onclick="startGame()">Bắt đầu</button>
-        <button onclick="restartGame()">Chơi lại</button>
+        <button onclick="restartGame()">Reset</button>
     </div>
 </div>
 
@@ -124,7 +124,7 @@ function moveStars() {
         star.style.top = (y + 2) + "px";
 
         if (y > window.innerHeight) {
-            star.style.top = "0px";
+            star.style.top = Math.random() * window.innerHeight + "px;
             star.style.left = Math.random() * window.innerWidth + "px";
         }
     });
@@ -153,6 +153,16 @@ function createObstacle() {
     obstacles.push(obs);
 }
 
+/* SPAWN NGẪU NHIÊN */
+function spawnLoop() {
+    if (!gameRunning) return;
+
+    createObstacle();
+
+    let randomTime = 500 + Math.random() * 800;
+    setTimeout(spawnLoop, randomTime);
+}
+
 /* START */
 function startGame() {
     menu.style.display = "none";
@@ -163,6 +173,7 @@ function startGame() {
     score = 0;
     gameRunning = true;
 
+    spawnLoop();
     update();
 }
 
@@ -183,11 +194,13 @@ function update() {
 
     moveStars();
 
-    obstacles.forEach((obs, index) => {
+    /* VA CHẠM CHUẨN */
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+        let obs = obstacles[i];
+
         let y = obs.offsetTop;
         obs.style.top = (y + speed) + "px";
 
-        /* HITBOX TRÒN */
         let px = player.offsetLeft + 30;
         let py = player.offsetTop + 30;
 
@@ -196,23 +209,26 @@ function update() {
 
         let dx = px - ox;
         let dy = py - oy;
+
         let distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 30) {
+        if (distance < 35) {
             gameRunning = false;
+
             menu.style.display = "flex";
             menu.innerHTML = `
                 <h1>💥 Game Over</h1>
                 <p>Khoảng cách: ${score}</p>
                 <button onclick="restartGame()">Chơi lại</button>
             `;
+            return;
         }
 
         if (y > window.innerHeight) {
             obs.remove();
-            obstacles.splice(index, 1);
+            obstacles.splice(i, 1);
         }
-    });
+    }
 
     score++;
     scoreText.innerText = "Khoảng cách: " + score;
@@ -220,10 +236,7 @@ function update() {
     requestAnimationFrame(update);
 }
 
-/* spawn */
-setInterval(createObstacle, 1000);
-
-/* init */
+/* INIT */
 createStars();
 </script>
 
