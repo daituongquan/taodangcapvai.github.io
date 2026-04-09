@@ -2,11 +2,25 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tàu anh qua núi</title>
+<title>Space Game OPTIMIZED</title>
 
 <style>
 body { margin:0; overflow:hidden; background:black; }
 #game { width:100vw; height:100vh; position:relative; }
+
+/* HOME BUTTON */
+.home-btn{
+    position:fixed;
+    top:10px;
+    right:10px;
+    padding:10px 15px;
+    background:#00c6ff;
+    border:none;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    z-index:999;
+}
 
 /* PLAYER */
 #player{
@@ -77,15 +91,24 @@ body { margin:0; overflow:hidden; background:black; }
 
 <body>
 
+<!-- ✅ NÚT HOME -->
+<button class="home-btn" onclick="goHome()">🏠 Home</button>
+
 <div id="game">
     <div id="player"></div>
     <div id="score">0 m</div>
 
     <div id="menu">
-        <h1>🚀 Tàu anh qua núi</h1>
+        <h1>🚀 Space Optimized</h1>
         <button onclick="startGame()">Start</button>
     </div>
 </div>
+
+<script>
+function goHome(){
+    window.location.href = "home.html";
+}
+</script>
 
 <script>
 let player = document.getElementById("player");
@@ -116,7 +139,6 @@ function shoot(){
         let el=document.createElement("div");
         el.className="laser";
         game.appendChild(el);
-
         lasers.push({el,x,y,speed});
     }
 
@@ -198,7 +220,6 @@ function update(){
     distance+=0.1;
     scoreText.innerText=Math.floor(distance)+" m";
 
-    /* SPAWN METEOR */
     spawnTimer+=16;
     if(spawnTimer>500 && obstacles.length<20){
         spawnTimer=0;
@@ -208,7 +229,6 @@ function update(){
         obstacles.push({el,x:Math.random()*(window.innerWidth-50),y:0});
     }
 
-    /* SPAWN BOX */
     boxTimer+=16;
     if(boxTimer>3000 && boxes.length<5){
         boxTimer=0;
@@ -218,7 +238,6 @@ function update(){
         boxes.push({el,x:Math.random()*(window.innerWidth-40),y:0});
     }
 
-    /* LASERS */
     for(let i=lasers.length-1;i>=0;i--){
         let l=lasers[i];
         l.y-=l.speed;
@@ -231,7 +250,6 @@ function update(){
         }
     }
 
-    /* METEOR */
     for(let i=obstacles.length-1;i>=0;i--){
         let o=obstacles[i];
         o.y+=4;
@@ -269,7 +287,6 @@ function update(){
         }
     }
 
-    /* BOX */
     for(let i=boxes.length-1;i>=0;i--){
         let b=boxes[i];
         b.y+=3;
@@ -296,6 +313,27 @@ function update(){
 
 /* INIT */
 createDebris();
+</script>
+
+<!-- ✅ FIREBASE CHECK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDaz1AZHFulAGimlsg98v-jk9mCsjE45Vw",
+  authDomain: "password-webtaodangcapvai.firebaseapp.com",
+  projectId: "password-webtaodangcapvai"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "index.html";
+  }
+});
 </script>
 
 </body>
