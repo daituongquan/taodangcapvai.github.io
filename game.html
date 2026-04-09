@@ -126,11 +126,12 @@ body { margin:0; overflow:hidden; background:black; }
     </div>
 </div>
 
-<!-- ✅ MOBILE BUTTONS -->
 <div id="mobileControls">
     <button id="leftBtn">⬅️</button>
-    <button id="shootBtn">🔫</button>
+    
     <button id="rightBtn">➡️</button>
+    <p>          </p>
+    <button id="shootBtn">⚔</button>
 </div>
 
 <script>
@@ -145,12 +146,10 @@ let scoreText = document.getElementById("score");
 let menu = document.getElementById("menu");
 let game = document.getElementById("game");
 
-/* KEYBOARD */
 let keys = {};
 document.addEventListener("keydown",e=>keys[e.code]=true);
 document.addEventListener("keyup",e=>keys[e.code]=false);
 
-/* MOBILE CONTROL */
 let moveLeft = false;
 let moveRight = false;
 let shooting = false;
@@ -205,14 +204,13 @@ function shoot(){
     else if(gunType==="rapid") createLaser(cx-2,playerY);
 }
 
-/* START */
 let spawnTimer=0, boxTimer=0, shootCooldown=0;
 
 function startGame(){
     menu.style.display="none";
 
     playerX=window.innerWidth/2;
-    playerY=window.innerHeight-100;
+    playerY=window.innerHeight-160;
 
     obstacles=[]; lasers=[]; boxes=[];
     shield=false; gunType="basic"; distance=0;
@@ -221,7 +219,6 @@ function startGame(){
     update();
 }
 
-/* DEBRIS */
 function createDebris(){
     for(let i=0;i<20;i++){
         let d=document.createElement("div");
@@ -245,22 +242,18 @@ function moveDebris(){
     });
 }
 
-/* LOOP */
 function update(){
     if(!gameRunning) return;
 
-    /* KEYBOARD */
     if(keys["ArrowLeft"]) playerX-=6;
     if(keys["ArrowRight"]) playerX+=6;
 
-    /* MOBILE */
     if(moveLeft) playerX-=6;
     if(moveRight) playerX+=6;
 
     player.style.left=playerX+"px";
     player.style.top=playerY+"px";
 
-    /* SHOOT */
     if((keys["Space"] || shooting) && shootCooldown<=0){
         shoot();
         shootCooldown = (gunType==="rapid")?3:10;
@@ -364,8 +357,7 @@ function update(){
 /* INIT */
 createDebris();
 </script>
-
-<!-- FIREBASE -->
+    
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
