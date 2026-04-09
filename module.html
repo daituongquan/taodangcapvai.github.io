@@ -13,7 +13,6 @@ body {
     font-family: Arial;
 }
 
-/* HOME */
 .home-btn {
     position: fixed;
     top: 15px;
@@ -27,7 +26,6 @@ body {
     cursor: pointer;
 }
 
-/* SUN */
 .sun {
     width: 80px;
     height: 80px;
@@ -40,7 +38,6 @@ body {
     transform: translate(-50%, -50%);
 }
 
-/* ORBIT */
 .orbit {
     position: absolute;
     top: 50%;
@@ -51,7 +48,6 @@ body {
     pointer-events: none; /* 🔥 FIX */
 }
 
-/* SPIN */
 .spin {
     width: 100%;
     height: 100%;
@@ -64,7 +60,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* PLANET */
+
 .planet {
     position: absolute;
     top: 50%;
@@ -80,7 +76,7 @@ body {
     display: block;
 }
 
-/* OVERLAY */
+
 .overlay {
     position: fixed;
     inset: 0;
@@ -117,7 +113,7 @@ button {
 
 <div class="sun"></div>
 
-<!-- PLANETS (ảnh fix cứng, không lỗi nữa) -->
+
 <script>
 const planets = [
  {name:"mercury", size:20, orbit:120, speed:8, img:"https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg"},
