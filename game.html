@@ -8,7 +8,6 @@
 body { margin:0; overflow:hidden; background:black; }
 #game { width:100vw; height:100vh; position:relative; overflow:visible;}
 
-/* HOME BUTTON */
 .home-btn{
     position:fixed;
     top:10px;
@@ -21,8 +20,6 @@ body { margin:0; overflow:hidden; background:black; }
     cursor:pointer;
     z-index:999;
 }
-
-/* PLAYER */
 #player{
     position:absolute;
     width:60px;
@@ -31,10 +28,8 @@ body { margin:0; overflow:hidden; background:black; }
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
-/* SHIELD */
 #player.shield { box-shadow:0 0 20px cyan; }
 
-/* METEOR */
 .obstacle{
     position:absolute;
     width:50px;
@@ -43,7 +38,6 @@ body { margin:0; overflow:hidden; background:black; }
     border-radius:50%;
 }
 
-/* LASER */
 .laser{
     position:absolute;
     width:4px;
@@ -51,7 +45,6 @@ body { margin:0; overflow:hidden; background:black; }
     background:red;
 }
 
-/* BOX */
 .box{
     position:absolute;
     width:40px;
@@ -59,7 +52,6 @@ body { margin:0; overflow:hidden; background:black; }
     background:gold;
 }
 
-/* DEBRIS */
 .debris{
     position:absolute;
     width:4px;
@@ -67,7 +59,6 @@ body { margin:0; overflow:hidden; background:black; }
     background:gray;
 }
 
-/* UI */
 #score{
     position:absolute;
     top:10px;
@@ -87,7 +78,6 @@ body { margin:0; overflow:hidden; background:black; }
     color:white;
 }
 
-/* ===== MOBILE CONTROL ===== */
 #mobileControls{
     position:fixed;
     bottom:20px;
@@ -121,7 +111,7 @@ body { margin:0; overflow:hidden; background:black; }
     <div id="score">0 m</div>
 
     <div id="menu">
-        <h1>🚀 Space Optimized</h1>
+        <h1>🚀 Tàu anh qua núi</h1>
         <button onclick="startGame()">Start</button>
     </div>
 </div>
@@ -163,7 +153,6 @@ document.getElementById("rightBtn").addEventListener("touchend",()=>moveRight=fa
 document.getElementById("shootBtn").addEventListener("touchstart",()=>shooting=true);
 document.getElementById("shootBtn").addEventListener("touchend",()=>shooting=false);
 
-/* GAME DATA */
 let playerX, playerY;
 let obstacles=[], lasers=[], boxes=[], debrisList=[];
 let gameRunning=false;
@@ -171,12 +160,10 @@ let shield=false;
 let gunType="basic";
 let distance=0;
 
-/* COLLISION */
 function hit(x1,y1,w1,h1,x2,y2,w2,h2){
     return x1<x2+w2 && x1+w1>x2 && y1<y2+h2 && y1+h1>y2;
 }
 
-/* SHOOT */
 function shoot(){
     function createLaser(x,y,speed=10){
         let el=document.createElement("div");
@@ -309,7 +296,7 @@ function update(){
             }
             gameRunning=false;
             menu.style.display="flex";
-            menu.innerHTML="<h1>💥 Game Over</h1><button onclick='location.reload()'>Restart</button>";
+            menu.innerHTML="<h1>Game Over</h1><button onclick='location.reload()'>Restart</button>";
             return;
         }
 
