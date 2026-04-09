@@ -163,7 +163,7 @@ button.save {
   </div>
 
   <div style="display:flex; align-items:center; gap:15px;">
-    <button onclick="toggleDark()" id="darkBtn">🌙</button>
+    <button onclick="toggleDark()" id="darkBtn">Chế độ sáng / tối</button>
 
     <div class="user-box" onclick="showPage('profile')">
       <img id="navAvatar" src="images/avatar1.png">
@@ -173,7 +173,7 @@ button.save {
 </div>
 
 <div id="home" class="page active">
-  <h1>🏠 Trang chủ</h1>
+  <h1>Trang chủ</h1>
   <h2>1. Mặt Trời</h2>
 <p>
 Mặt Trời là trung tâm của Hệ Mặt Trời, chiếm hơn 99,8% khối lượng của toàn hệ.
@@ -491,7 +491,7 @@ onAuthStateChanged(auth, user => {
     }
 
     if (localStorage.getItem("darkMode") === "true") {
-      document.body.classList.add("dark");
+      document.body.classList.add("dark"); 
     }
   }
 });
