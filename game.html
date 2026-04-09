@@ -93,9 +93,10 @@ body { margin:0; overflow:hidden; background:black; }
     bottom:20px;
     left:50%;
     transform:translateX(-50%);
-    display:none;
+    display:flex;
     gap:20px;
-    z-index:999;
+    z-index:9999;
+    
 }
 
 #mobileControls button{
@@ -108,15 +109,6 @@ body { margin:0; overflow:hidden; background:black; }
     color:white;
 }
 
-@media (max-width:768px){
-    #mobileControls{ position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    gap:20px;
-    z-index:9999; }
-}
 </style>
 </head>
 
