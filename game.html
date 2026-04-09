@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Space Game FINAL</title>
+<title>Space Game FINAL FIXED</title>
 
 <style>
 body {
@@ -126,13 +126,15 @@ document.addEventListener("visibilitychange", () => {
     paused = document.hidden;
 });
 
-/* SHOOT */
+/* 🔫 SHOOT (FIX LỆCH) */
 function shoot() {
     let l = document.createElement("div");
     l.classList.add("laser");
 
-    l.style.left = player.offsetLeft + 28 + "px";
-    l.style.top = player.offsetTop + "px";
+    let rect = player.getBoundingClientRect();
+
+    l.style.left = (rect.left + rect.width/2 - 2) + "px";
+    l.style.top = rect.top + "px";
 
     game.appendChild(l);
     lasers.push(l);
@@ -227,7 +229,7 @@ function update() {
         obstacles.push(obs);
     }
 
-    /* LASER */
+    /* LASER MOVE */
     for (let i = lasers.length - 1; i >= 0; i--) {
         let l = lasers[i];
         l.style.top = l.offsetTop - 10 + "px";
@@ -238,20 +240,44 @@ function update() {
         }
     }
 
-    /* METEOR */
+    /* 💥 METEOR + VA CHẠM FIX */
     for (let i = obstacles.length - 1; i >= 0; i--) {
         let o = obstacles[i];
         o.style.top = o.offsetTop + 4 + "px";
 
-        /* HIT */
+        let oRect = o.getBoundingClientRect();
+        let pRect = player.getBoundingClientRect();
+
+        let oX = oRect.left + oRect.width/2;
+        let oY = oRect.top + oRect.height/2;
+        let pX = pRect.left + pRect.width/2;
+        let pY = pRect.top + pRect.height/2;
+
+        let dx = pX - oX;
+        let dy = pY - oY;
+
+        /* 💥 GAME OVER */
+        if (Math.sqrt(dx*dx + dy*dy) < 30) {
+            gameRunning = false;
+
+            menu.style.display = "flex";
+            menu.innerHTML = `
+                <h1>💥 Game Over</h1>
+                <button onclick="location.reload()">Restart</button>
+            `;
+            return;
+        }
+
+        /* 🔫 LASER HIT */
         for (let j = lasers.length - 1; j >= 0; j--) {
             let l = lasers[j];
+            let lRect = l.getBoundingClientRect();
 
             if (
-                l.offsetLeft < o.offsetLeft + 50 &&
-                l.offsetLeft + 4 > o.offsetLeft &&
-                l.offsetTop < o.offsetTop + 50 &&
-                l.offsetTop + 20 > o.offsetTop
+                lRect.left < oRect.right &&
+                lRect.right > oRect.left &&
+                lRect.top < oRect.bottom &&
+                lRect.bottom > oRect.top
             ) {
                 o.remove();
                 l.remove();
