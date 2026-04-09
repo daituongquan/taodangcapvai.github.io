@@ -2,28 +2,21 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Game Phi Thuyền PRO</title>
+<title>Space Shooter PRO</title>
 
 <style>
 body {
     margin: 0;
     overflow: hidden;
     background: black;
-    font-family: Arial;
     color: white;
 }
 
+/* GAME */
 #game {
     width: 100vw;
     height: 100vh;
     position: relative;
-}
-
-/* SAO 3 LỚP */
-.star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
 }
 
 /* PLAYER */
@@ -37,7 +30,12 @@ body {
     background: url('https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png');
     background-size: contain;
     background-repeat: no-repeat;
-    transition: transform 0.1s;
+}
+
+/* fallback nếu ảnh lỗi */
+#player.fallback {
+    background: cyan;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
 /* METEOR */
@@ -47,13 +45,14 @@ body {
     height: 50px;
     background: url('https://i.imgur.com/OdL0XPt.png');
     background-size: contain;
-    background-repeat: no-repeat;
-    animation: spin 2s linear infinite;
 }
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+/* LASER */
+.laser {
+    position: absolute;
+    width: 4px;
+    height: 20px;
+    background: red;
 }
 
 /* PARTICLE */
@@ -65,12 +64,6 @@ body {
 }
 
 /* UI */
-#score {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-}
-
 #menu {
     position: absolute;
     width: 100%;
@@ -93,10 +86,9 @@ button {
 
 <div id="game">
     <div id="player"></div>
-    <div id="score">0</div>
 
     <div id="menu">
-        <h1>🚀 Space Survival</h1>
+        <h1>🚀 Space Shooter</h1>
         <button onclick="startGame()">Start</button>
     </div>
 </div>
@@ -104,52 +96,50 @@ button {
 <script>
 let player = document.getElementById("player");
 let game = document.getElementById("game");
-let scoreText = document.getElementById("score");
 let menu = document.getElementById("menu");
 
 let keys = {};
 let playerX;
-let speed;
 let obstacles = [];
-let score;
+let lasers = [];
 let gameRunning = false;
 
+/* FIX mất ảnh */
+let img = new Image();
+img.src = player.style.backgroundImage.replace(/url\("|"\)/g, '');
+img.onerror = () => {
+    player.classList.add("fallback");
+};
+
 /* INPUT */
-document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keydown", e => {
+    keys[e.key] = true;
+
+    if (e.code === "Space" && gameRunning) shoot();
+});
 document.addEventListener("keyup", e => keys[e.key] = false);
 
-/* SAO PARALLAX */
-function createStars() {
-    for (let i = 0; i < 120; i++) {
-        let star = document.createElement("div");
-        star.classList.add("star");
+/* SOUND */
+let shootSound = new Audio("https://actions.google.com/sounds/v1/laser/laser_pew_pew.ogg");
+let boomSound = new Audio("https://actions.google.com/sounds/v1/explosions/explosion.ogg");
 
-        let size = Math.random() * 3;
-        star.style.width = size + "px";
-        star.style.height = size + "px";
+/* SHOOT */
+function shoot() {
+    let laser = document.createElement("div");
+    laser.classList.add("laser");
 
-        star.dataset.speed = 1 + Math.random() * 3;
+    laser.style.left = player.offsetLeft + 28 + "px";
+    laser.style.top = player.offsetTop + "px";
 
-        star.style.left = Math.random() * window.innerWidth + "px";
-        star.style.top = Math.random() * window.innerHeight + "px";
+    game.appendChild(laser);
+    lasers.push(laser);
 
-        game.appendChild(star);
-    }
-}
-
-function moveStars() {
-    document.querySelectorAll(".star").forEach(star => {
-        let y = star.offsetTop + Number(star.dataset.speed);
-        if (y > window.innerHeight) {
-            y = 0;
-            star.style.left = Math.random() * window.innerWidth + "px";
-        }
-        star.style.top = y + "px";
-    });
+    shootSound.currentTime = 0;
+    shootSound.play();
 }
 
 /* SPAWN */
-function spawnLoop() {
+function spawn() {
     if (!gameRunning) return;
 
     let obs = document.createElement("div");
@@ -161,12 +151,15 @@ function spawnLoop() {
     game.appendChild(obs);
     obstacles.push(obs);
 
-    setTimeout(spawnLoop, 400 + Math.random() * 600);
+    setTimeout(spawn, 500);
 }
 
 /* EXPLOSION */
 function explode(x, y) {
-    for (let i = 0; i < 20; i++) {
+    boomSound.currentTime = 0;
+    boomSound.play();
+
+    for (let i = 0; i < 15; i++) {
         let p = document.createElement("div");
         p.classList.add("particle");
 
@@ -175,19 +168,13 @@ function explode(x, y) {
 
         game.appendChild(p);
 
-        let angle = Math.random() * 2 * Math.PI;
-        let speed = Math.random() * 5;
-
-        let vx = Math.cos(angle) * speed;
-        let vy = Math.sin(angle) * speed;
+        let vx = (Math.random() - 0.5) * 6;
+        let vy = (Math.random() - 0.5) * 6;
 
         let life = 30;
 
         function move() {
-            if (life-- <= 0) {
-                p.remove();
-                return;
-            }
+            if (life-- <= 0) return p.remove();
             p.style.left = p.offsetLeft + vx + "px";
             p.style.top = p.offsetTop + vy + "px";
             requestAnimationFrame(move);
@@ -201,12 +188,11 @@ function startGame() {
     menu.style.display = "none";
 
     playerX = window.innerWidth / 2;
-    speed = 4;
-    score = 0;
     obstacles = [];
+    lasers = [];
     gameRunning = true;
 
-    spawnLoop();
+    spawn();
     update();
 }
 
@@ -215,59 +201,72 @@ function update() {
     if (!gameRunning) return;
 
     /* MOVE */
-    if (keys["ArrowLeft"]) {
-        playerX -= 6;
-        player.style.transform = "translateX(-50%) rotate(-15deg)";
-    }
-    else if (keys["ArrowRight"]) {
-        playerX += 6;
-        player.style.transform = "translateX(-50%) rotate(15deg)";
-    } else {
-        player.style.transform = "translateX(-50%) rotate(0deg)";
-    }
+    if (keys["ArrowLeft"]) playerX -= 6;
+    if (keys["ArrowRight"]) playerX += 6;
 
     if (playerX < 0) playerX = 0;
     if (playerX > window.innerWidth - 60) playerX = window.innerWidth - 60;
 
     player.style.left = playerX + "px";
 
-    moveStars();
+    /* LASER */
+    for (let i = lasers.length - 1; i >= 0; i--) {
+        let l = lasers[i];
+        l.style.top = l.offsetTop - 10 + "px";
 
-    /* OBSTACLES */
+        if (l.offsetTop < 0) {
+            l.remove();
+            lasers.splice(i,1);
+        }
+    }
+
+    /* OBSTACLE */
     for (let i = obstacles.length - 1; i >= 0; i--) {
-        let obs = obstacles[i];
-        let y = obs.offsetTop + speed;
-        obs.style.top = y + "px";
+        let o = obstacles[i];
+        o.style.top = o.offsetTop + 4 + "px";
 
-        let dx = (player.offsetLeft + 30) - (obs.offsetLeft + 25);
-        let dy = (player.offsetTop + 30) - (obs.offsetTop + 25);
+        /* TRÚNG LASER */
+        for (let j = lasers.length - 1; j >= 0; j--) {
+            let l = lasers[j];
+
+            if (
+                l.offsetLeft < o.offsetLeft + 50 &&
+                l.offsetLeft + 4 > o.offsetLeft &&
+                l.offsetTop < o.offsetTop + 50 &&
+                l.offsetTop + 20 > o.offsetTop
+            ) {
+                explode(o.offsetLeft, o.offsetTop);
+
+                o.remove();
+                l.remove();
+
+                obstacles.splice(i,1);
+                lasers.splice(j,1);
+                break;
+            }
+        }
+
+        /* ĐỤNG PLAYER */
+        let dx = (player.offsetLeft + 30) - (o.offsetLeft + 25);
+        let dy = (player.offsetTop + 30) - (o.offsetTop + 25);
 
         if (Math.sqrt(dx*dx + dy*dy) < 35) {
             explode(player.offsetLeft, player.offsetTop);
             gameRunning = false;
 
             menu.style.display = "flex";
-            menu.innerHTML = `<h1>💥 Game Over</h1><p>${score}</p><button onclick="location.reload()">Restart</button>`;
+            menu.innerHTML = `<h1>💥 Game Over</h1><button onclick="location.reload()">Restart</button>`;
             return;
         }
 
-        if (y > window.innerHeight) {
-            obs.remove();
-            obstacles.splice(i, 1);
+        if (o.offsetTop > window.innerHeight) {
+            o.remove();
+            obstacles.splice(i,1);
         }
     }
 
-    /* TĂNG ĐỘ KHÓ */
-    speed += 0.002;
-
-    score++;
-    scoreText.innerText = score;
-
     requestAnimationFrame(update);
 }
-
-/* INIT */
-createStars();
 </script>
 
 </body>
