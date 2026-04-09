@@ -86,12 +86,36 @@ body { margin:0; overflow:hidden; background:black; }
     flex-direction:column;
     color:white;
 }
+
+/* ===== MOBILE CONTROL ===== */
+#mobileControls{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    display:none;
+    gap:20px;
+    z-index:999;
+}
+
+#mobileControls button{
+    width:70px;
+    height:70px;
+    font-size:24px;
+    border:none;
+    border-radius:50%;
+    background:rgba(0,0,0,0.6);
+    color:white;
+}
+
+@media (max-width:768px){
+    #mobileControls{ display:flex; }
+}
 </style>
 </head>
 
 <body>
 
-<!-- ✅ NÚT HOME -->
 <button class="home-btn" onclick="goHome()">🏠 Home</button>
 
 <div id="game">
@@ -102,6 +126,13 @@ body { margin:0; overflow:hidden; background:black; }
         <h1>🚀 Space Optimized</h1>
         <button onclick="startGame()">Start</button>
     </div>
+</div>
+
+<!-- ✅ MOBILE BUTTONS -->
+<div id="mobileControls">
+    <button id="leftBtn">⬅️</button>
+    <button id="shootBtn">🔫</button>
+    <button id="rightBtn">➡️</button>
 </div>
 
 <script>
@@ -116,9 +147,24 @@ let scoreText = document.getElementById("score");
 let menu = document.getElementById("menu");
 let game = document.getElementById("game");
 
+/* KEYBOARD */
 let keys = {};
 document.addEventListener("keydown",e=>keys[e.code]=true);
 document.addEventListener("keyup",e=>keys[e.code]=false);
+
+/* MOBILE CONTROL */
+let moveLeft = false;
+let moveRight = false;
+let shooting = false;
+
+document.getElementById("leftBtn").addEventListener("touchstart",()=>moveLeft=true);
+document.getElementById("leftBtn").addEventListener("touchend",()=>moveLeft=false);
+
+document.getElementById("rightBtn").addEventListener("touchstart",()=>moveRight=true);
+document.getElementById("rightBtn").addEventListener("touchend",()=>moveRight=false);
+
+document.getElementById("shootBtn").addEventListener("touchstart",()=>shooting=true);
+document.getElementById("shootBtn").addEventListener("touchend",()=>shooting=false);
 
 /* GAME DATA */
 let playerX, playerY;
@@ -205,13 +251,19 @@ function moveDebris(){
 function update(){
     if(!gameRunning) return;
 
+    /* KEYBOARD */
     if(keys["ArrowLeft"]) playerX-=6;
     if(keys["ArrowRight"]) playerX+=6;
+
+    /* MOBILE */
+    if(moveLeft) playerX-=6;
+    if(moveRight) playerX+=6;
 
     player.style.left=playerX+"px";
     player.style.top=playerY+"px";
 
-    if(keys["Space"] && shootCooldown<=0){
+    /* SHOOT */
+    if((keys["Space"] || shooting) && shootCooldown<=0){
         shoot();
         shootCooldown = (gunType==="rapid")?3:10;
     }
@@ -315,7 +367,7 @@ function update(){
 createDebris();
 </script>
 
-<!-- ✅ FIREBASE CHECK -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
@@ -330,9 +382,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 onAuthStateChanged(auth, user => {
-  if (!user) {
-    window.location.href = "index.html";
-  }
+  if (!user) window.location.href = "index.html";
 });
 </script>
 
