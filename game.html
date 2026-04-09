@@ -6,55 +6,34 @@
 
 <style>
 body { margin:0; overflow:hidden; background:black; }
-
-/* GAME */
 #game { width:100vw; height:100vh; position:relative; }
 
-/* PLAYER (fallback luôn có) */
+/* PLAYER */
 #player{
     position:absolute;
-    bottom:40px;
-    left:50%;
     width:60px;
     height:60px;
-    transform:translateX(-50%);
-
-    /* fallback */
     background: linear-gradient(to top, cyan, white);
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
-/* nếu load được ảnh thì ghi đè */
-#player.has-img{
-    background: url('https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    clip-path: none;
-}
-
 /* SHIELD */
-#player.shield {
-    box-shadow:0 0 20px cyan;
-}
+#player.shield { box-shadow:0 0 20px cyan; }
 
 /* METEOR */
 .obstacle{
     position:absolute;
     width:50px;
     height:50px;
-    background:url('https://i.imgur.com/OdL0XPt.png');
-    background-size:contain;
-    animation:spin 2s linear infinite;
-}
-@keyframes spin{
-    from{transform:rotate(0)}
-    to{transform:rotate(360deg)}
+    background:#888;
+    border-radius:50%;
 }
 
 /* LASER */
 .laser{
     position:absolute;
     width:4px;
+    height:20px;
     background:red;
 }
 
@@ -64,14 +43,13 @@ body { margin:0; overflow:hidden; background:black; }
     width:40px;
     height:40px;
     background:gold;
-    border:2px solid white;
 }
 
 /* DEBRIS */
 .debris{
     position:absolute;
-    width:6px;
-    height:6px;
+    width:4px;
+    height:4px;
     background:gray;
 }
 
@@ -104,7 +82,7 @@ body { margin:0; overflow:hidden; background:black; }
     <div id="score">0 m</div>
 
     <div id="menu">
-        <h1>🚀 Space Game</h1>
+        <h1>🚀 Tàu anh qua núi</h1>
         <button onclick="startGame()">Start</button>
     </div>
 </div>
@@ -115,89 +93,63 @@ let scoreText = document.getElementById("score");
 let menu = document.getElementById("menu");
 let game = document.getElementById("game");
 
-/* ✅ FIX LOAD ẢNH */
-let testImg = new Image();
-testImg.src = "https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png";
-
-testImg.onload = () => {
-    player.classList.add("has-img");
-};
-
-testImg.onerror = () => {
-    console.log("Ảnh lỗi → dùng fallback");
-};
-
 let keys = {};
-let playerX;
-let obstacles = [];
-let lasers = [];
-let boxes = [];
-let debrisList = [];
+document.addEventListener("keydown",e=>keys[e.code]=true);
+document.addEventListener("keyup",e=>keys[e.code]=false);
 
+/* GAME DATA */
+let playerX, playerY;
+let obstacles=[], lasers=[], boxes=[], debrisList=[];
 let gameRunning=false;
 let shield=false;
 let gunType="basic";
 let distance=0;
 
-/* INPUT */
-document.addEventListener("keydown",e=>keys[e.code]=true);
-document.addEventListener("keyup",e=>keys[e.code]=false);
+/* COLLISION */
+function hit(x1,y1,w1,h1,x2,y2,w2,h2){
+    return x1<x2+w2 && x1+w1>x2 && y1<y2+h2 && y1+h1>y2;
+}
 
-/* 🔫 SHOOT */
+/* SHOOT */
 function shoot(){
-    let rect = player.getBoundingClientRect();
+    function createLaser(x,y,speed=10){
+        let el=document.createElement("div");
+        el.className="laser";
+        game.appendChild(el);
 
-    function createLaser(offsetX, speed=10, height=20){
-        let l=document.createElement("div");
-        l.classList.add("laser");
-
-        l.style.left = (rect.left + rect.width/2 + offsetX) + "px";
-        l.style.top = rect.top + "px";
-        l.style.height = height + "px";
-
-        l.dataset.speed = speed;
-
-        game.appendChild(l);
-        lasers.push(l);
+        lasers.push({el,x,y,speed});
     }
 
-    if(gunType==="basic"){
-        createLaser(-2);
-    }
+    let cx = playerX + 30;
+
+    if(gunType==="basic") createLaser(cx-2,playerY);
     else if(gunType==="triple"){
-        createLaser(-12);
-        createLaser(-2);
-        createLaser(8);
+        createLaser(cx-12,playerY);
+        createLaser(cx-2,playerY);
+        createLaser(cx+8,playerY);
     }
     else if(gunType==="spread"){
-        createLaser(-20);
-        createLaser(-10);
-        createLaser(-2);
-        createLaser(8);
-        createLaser(18);
+        createLaser(cx-20,playerY);
+        createLaser(cx-10,playerY);
+        createLaser(cx-2,playerY);
+        createLaser(cx+8,playerY);
+        createLaser(cx+18,playerY);
     }
-    else if(gunType==="laser"){
-        createLaser(-2,15,60);
-    }
-    else if(gunType==="rapid"){
-        createLaser(-2);
-    }
+    else if(gunType==="laser") createLaser(cx-2,playerY,15);
+    else if(gunType==="rapid") createLaser(cx-2,playerY);
 }
 
 /* START */
-let spawnTimer=0;
-let boxTimer=0;
-let shootCooldown=0;
+let spawnTimer=0, boxTimer=0, shootCooldown=0;
 
 function startGame(){
     menu.style.display="none";
 
     playerX=window.innerWidth/2;
-    obstacles=[]; lasers=[]; boxes=[];
+    playerY=window.innerHeight-100;
 
-    shield=false;
-    gunType="basic";
-    distance=0;
+    obstacles=[]; lasers=[]; boxes=[];
+    shield=false; gunType="basic"; distance=0;
 
     gameRunning=true;
     update();
@@ -205,25 +157,25 @@ function startGame(){
 
 /* DEBRIS */
 function createDebris(){
-    for(let i=0;i<40;i++){
+    for(let i=0;i<20;i++){
         let d=document.createElement("div");
-        d.classList.add("debris");
-        d.style.left=Math.random()*window.innerWidth+"px";
-        d.style.top=Math.random()*window.innerHeight+"px";
-        d.dataset.speed=1+Math.random()*2;
+        d.className="debris";
+        let x=Math.random()*window.innerWidth;
+        let y=Math.random()*window.innerHeight;
+        let speed=1+Math.random()*2;
         game.appendChild(d);
-        debrisList.push(d);
+        debrisList.push({el:d,x,y,speed});
     }
 }
-
 function moveDebris(){
     debrisList.forEach(d=>{
-        let y=d.offsetTop+Number(d.dataset.speed);
-        if(y>window.innerHeight){
-            y=0;
-            d.style.left=Math.random()*window.innerWidth+"px";
+        d.y+=d.speed;
+        if(d.y>window.innerHeight){
+            d.y=0;
+            d.x=Math.random()*window.innerWidth;
         }
-        d.style.top=y+"px";
+        d.el.style.left=d.x+"px";
+        d.el.style.top=d.y+"px";
     });
 }
 
@@ -235,10 +187,11 @@ function update(){
     if(keys["ArrowRight"]) playerX+=6;
 
     player.style.left=playerX+"px";
+    player.style.top=playerY+"px";
 
     if(keys["Space"] && shootCooldown<=0){
         shoot();
-        shootCooldown = (gunType==="rapid") ? 3 : 10;
+        shootCooldown = (gunType==="rapid")?3:10;
     }
     shootCooldown--;
 
@@ -247,35 +200,33 @@ function update(){
 
     /* SPAWN METEOR */
     spawnTimer+=16;
-    if(spawnTimer>500){
+    if(spawnTimer>500 && obstacles.length<20){
         spawnTimer=0;
-
-        let o=document.createElement("div");
-        o.classList.add("obstacle");
-        o.style.left=Math.random()*(window.innerWidth-50)+"px";
-        game.appendChild(o);
-        obstacles.push(o);
+        let el=document.createElement("div");
+        el.className="obstacle";
+        game.appendChild(el);
+        obstacles.push({el,x:Math.random()*(window.innerWidth-50),y:0});
     }
 
     /* SPAWN BOX */
     boxTimer+=16;
-    if(boxTimer>3000){
+    if(boxTimer>3000 && boxes.length<5){
         boxTimer=0;
-
-        let b=document.createElement("div");
-        b.classList.add("box");
-        b.style.left=Math.random()*(window.innerWidth-40)+"px";
-        game.appendChild(b);
-        boxes.push(b);
+        let el=document.createElement("div");
+        el.className="box";
+        game.appendChild(el);
+        boxes.push({el,x:Math.random()*(window.innerWidth-40),y:0});
     }
 
-    /* LASER */
+    /* LASERS */
     for(let i=lasers.length-1;i>=0;i--){
         let l=lasers[i];
-        l.style.top = l.offsetTop - (l.dataset.speed||10) + "px";
+        l.y-=l.speed;
+        l.el.style.left=l.x+"px";
+        l.el.style.top=l.y+"px";
 
-        if(l.offsetTop<0){
-            l.remove();
+        if(l.y<0){
+            l.el.remove();
             lasers.splice(i,1);
         }
     }
@@ -283,23 +234,18 @@ function update(){
     /* METEOR */
     for(let i=obstacles.length-1;i>=0;i--){
         let o=obstacles[i];
-        o.style.top=o.offsetTop+4+"px";
+        o.y+=4;
+        o.el.style.left=o.x+"px";
+        o.el.style.top=o.y+"px";
 
-        let oR=o.getBoundingClientRect();
-        let pR=player.getBoundingClientRect();
-
-        let dx=(pR.left+pR.width/2)-(oR.left+oR.width/2);
-        let dy=(pR.top+pR.height/2)-(oR.top+oR.height/2);
-
-        if(Math.sqrt(dx*dx+dy*dy)<30){
+        if(hit(playerX,playerY,60,60,o.x,o.y,50,50)){
             if(shield){
                 shield=false;
                 player.classList.remove("shield");
-                o.remove();
+                o.el.remove();
                 obstacles.splice(i,1);
                 continue;
             }
-
             gameRunning=false;
             menu.style.display="flex";
             menu.innerHTML="<h1>💥 Game Over</h1><button onclick='location.reload()'>Restart</button>";
@@ -308,44 +254,35 @@ function update(){
 
         for(let j=lasers.length-1;j>=0;j--){
             let l=lasers[j];
-            let lR=l.getBoundingClientRect();
-
-            if(
-                lR.left<oR.right &&
-                lR.right>oR.left &&
-                lR.top<oR.bottom &&
-                lR.bottom>oR.top
-            ){
-                o.remove();
-                l.remove();
+            if(hit(l.x,l.y,4,20,o.x,o.y,50,50)){
+                o.el.remove();
+                l.el.remove();
                 obstacles.splice(i,1);
                 lasers.splice(j,1);
                 break;
             }
+        }
+
+        if(o.y>window.innerHeight){
+            o.el.remove();
+            obstacles.splice(i,1);
         }
     }
 
     /* BOX */
     for(let i=boxes.length-1;i>=0;i--){
         let b=boxes[i];
-        b.style.top=b.offsetTop+3+"px";
+        b.y+=3;
+        b.el.style.left=b.x+"px";
+        b.el.style.top=b.y+"px";
 
-        let bR=b.getBoundingClientRect();
-        let pR=player.getBoundingClientRect();
-
-        if(
-            bR.left<pR.right &&
-            bR.right>pR.left &&
-            bR.top<pR.bottom &&
-            bR.bottom>pR.top
-        ){
-            b.remove();
+        if(hit(playerX,playerY,60,60,b.x,b.y,40,40)){
+            b.el.remove();
             boxes.splice(i,1);
 
             let guns=["triple","spread","laser","rapid"];
-
             if(Math.random()<0.7){
-                gunType = guns[Math.floor(Math.random()*guns.length)];
+                gunType=guns[Math.floor(Math.random()*guns.length)];
             }else{
                 shield=true;
                 player.classList.add("shield");
