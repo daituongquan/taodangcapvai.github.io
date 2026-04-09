@@ -147,8 +147,15 @@ window.login = function() {
     err.code === "auth/invalid-credential"
   ) {
     document.getElementById("error").innerText =
-      "❌ Sai mật khẩu rồi má!";
-    } else {
+      "❌ Sai mật khẩu hoặc tài khoản!"; 
+    } 
+       if (
+    err.code === "auth/too-many-requests"
+  ) {
+      document.getElementById("error").innerText =
+      "Bấm ít thôi 60s nữa quay lại";
+    }
+    else {
       document.getElementById("error").innerText = err.message;
     }
   });
