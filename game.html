@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Space Game PRO MAX</title>
+<title>Tàu anh qua núi</title>
 
 <style>
 body { margin:0; overflow:hidden; background:black; }
@@ -10,7 +10,7 @@ body { margin:0; overflow:hidden; background:black; }
 /* GAME */
 #game { width:100vw; height:100vh; position:relative; }
 
-/* PLAYER */
+/* PLAYER (fallback luôn có) */
 #player{
     position:absolute;
     bottom:40px;
@@ -18,8 +18,18 @@ body { margin:0; overflow:hidden; background:black; }
     width:60px;
     height:60px;
     transform:translateX(-50%);
-    background:url('https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png');
-    background-size:contain;
+
+    /* fallback */
+    background: linear-gradient(to top, cyan, white);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+/* nếu load được ảnh thì ghi đè */
+#player.has-img{
+    background: url('https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    clip-path: none;
 }
 
 /* SHIELD */
@@ -94,7 +104,7 @@ body { margin:0; overflow:hidden; background:black; }
     <div id="score">0 m</div>
 
     <div id="menu">
-        <h1>🚀 Space PRO MAX</h1>
+        <h1>🚀 Space Game</h1>
         <button onclick="startGame()">Start</button>
     </div>
 </div>
@@ -104,6 +114,18 @@ let player = document.getElementById("player");
 let scoreText = document.getElementById("score");
 let menu = document.getElementById("menu");
 let game = document.getElementById("game");
+
+/* ✅ FIX LOAD ẢNH */
+let testImg = new Image();
+testImg.src = "https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png";
+
+testImg.onload = () => {
+    player.classList.add("has-img");
+};
+
+testImg.onerror = () => {
+    console.log("Ảnh lỗi → dùng fallback");
+};
 
 let keys = {};
 let playerX;
@@ -121,7 +143,7 @@ let distance=0;
 document.addEventListener("keydown",e=>keys[e.code]=true);
 document.addEventListener("keyup",e=>keys[e.code]=false);
 
-/* 🔫 SHOOT MULTI */
+/* 🔫 SHOOT */
 function shoot(){
     let rect = player.getBoundingClientRect();
 
@@ -209,25 +231,17 @@ function moveDebris(){
 function update(){
     if(!gameRunning) return;
 
-    /* MOVE */
     if(keys["ArrowLeft"]) playerX-=6;
     if(keys["ArrowRight"]) playerX+=6;
 
     player.style.left=playerX+"px";
 
-    /* SHOOT */
     if(keys["Space"] && shootCooldown<=0){
         shoot();
-
-        if(gunType==="rapid"){
-            shootCooldown=3;
-        }else{
-            shootCooldown=10;
-        }
+        shootCooldown = (gunType==="rapid") ? 3 : 10;
     }
     shootCooldown--;
 
-    /* DISTANCE */
     distance+=0.1;
     scoreText.innerText=Math.floor(distance)+" m";
 
@@ -255,7 +269,7 @@ function update(){
         boxes.push(b);
     }
 
-    /* LASER MOVE */
+    /* LASER */
     for(let i=lasers.length-1;i>=0;i--){
         let l=lasers[i];
         l.style.top = l.offsetTop - (l.dataset.speed||10) + "px";
@@ -277,7 +291,6 @@ function update(){
         let dx=(pR.left+pR.width/2)-(oR.left+oR.width/2);
         let dy=(pR.top+pR.height/2)-(oR.top+oR.height/2);
 
-        /* 💥 HIT PLAYER */
         if(Math.sqrt(dx*dx+dy*dy)<30){
             if(shield){
                 shield=false;
@@ -293,7 +306,6 @@ function update(){
             return;
         }
 
-        /* 🔫 HIT METEOR */
         for(let j=lasers.length-1;j>=0;j--){
             let l=lasers[j];
             let lR=l.getBoundingClientRect();
