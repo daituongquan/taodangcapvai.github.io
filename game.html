@@ -2,87 +2,87 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Space Game FINAL FIXED</title>
+<title>Space Game PRO MAX</title>
 
 <style>
-body {
-    margin: 0;
-    overflow: hidden;
-    background: black;
-}
+body { margin:0; overflow:hidden; background:black; }
 
 /* GAME */
-#game {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-}
+#game { width:100vw; height:100vh; position:relative; }
 
 /* PLAYER */
-#player {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    width: 60px;
-    height: 60px;
-    transform: translateX(-50%);
-    background: url('https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png');
-    background-size: contain;
-    background-repeat: no-repeat;
+#player{
+    position:absolute;
+    bottom:40px;
+    left:50%;
+    width:60px;
+    height:60px;
+    transform:translateX(-50%);
+    background:url('https://img.itch.zone/aW1hZ2UvNjY3NjY4LzM1NjE3MjcucG5n/original/3R%2FZpG.png');
+    background-size:contain;
 }
 
-#player.fallback {
-    background: cyan;
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+/* SHIELD */
+#player.shield {
+    box-shadow:0 0 20px cyan;
 }
 
 /* METEOR */
-.obstacle {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background: url('https://i.imgur.com/OdL0XPt.png');
-    background-size: contain;
-    animation: spin 2s linear infinite;
+.obstacle{
+    position:absolute;
+    width:50px;
+    height:50px;
+    background:url('https://i.imgur.com/OdL0XPt.png');
+    background-size:contain;
+    animation:spin 2s linear infinite;
 }
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+@keyframes spin{
+    from{transform:rotate(0)}
+    to{transform:rotate(360deg)}
 }
 
 /* LASER */
-.laser {
-    position: absolute;
-    width: 4px;
-    height: 20px;
-    background: red;
+.laser{
+    position:absolute;
+    width:4px;
+    background:red;
+}
+
+/* BOX */
+.box{
+    position:absolute;
+    width:40px;
+    height:40px;
+    background:gold;
+    border:2px solid white;
 }
 
 /* DEBRIS */
-.debris {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: gray;
-    opacity: 0.6;
+.debris{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:gray;
 }
 
-/* MENU */
-#menu {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+/* UI */
+#score{
+    position:absolute;
+    top:10px;
+    left:10px;
+    color:white;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 18px;
+#menu{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:white;
 }
 </style>
 </head>
@@ -91,194 +91,219 @@ button {
 
 <div id="game">
     <div id="player"></div>
+    <div id="score">0 m</div>
 
     <div id="menu">
-        <h1>🚀 Space Shooter</h1>
+        <h1>🚀 Space PRO MAX</h1>
         <button onclick="startGame()">Start</button>
     </div>
 </div>
 
 <script>
 let player = document.getElementById("player");
-let game = document.getElementById("game");
+let scoreText = document.getElementById("score");
 let menu = document.getElementById("menu");
+let game = document.getElementById("game");
 
 let keys = {};
 let playerX;
 let obstacles = [];
 let lasers = [];
+let boxes = [];
 let debrisList = [];
 
-let gameRunning = false;
-let paused = false;
-
-/* FIX mất ảnh */
-let img = new Image();
-img.src = player.style.backgroundImage.replace(/url\\("|"\\)/g, '');
-img.onerror = () => player.classList.add("fallback");
+let gameRunning=false;
+let shield=false;
+let gunType="basic";
+let distance=0;
 
 /* INPUT */
-document.addEventListener("keydown", e => keys[e.code] = true);
-document.addEventListener("keyup", e => keys[e.code] = false);
+document.addEventListener("keydown",e=>keys[e.code]=true);
+document.addEventListener("keyup",e=>keys[e.code]=false);
 
-/* PAUSE khi đổi tab */
-document.addEventListener("visibilitychange", () => {
-    paused = document.hidden;
-});
-
-/* 🔫 SHOOT (FIX LỆCH) */
-function shoot() {
-    let l = document.createElement("div");
-    l.classList.add("laser");
-
+/* 🔫 SHOOT MULTI */
+function shoot(){
     let rect = player.getBoundingClientRect();
 
-    l.style.left = (rect.left + rect.width/2 - 2) + "px";
-    l.style.top = rect.top + "px";
+    function createLaser(offsetX, speed=10, height=20){
+        let l=document.createElement("div");
+        l.classList.add("laser");
 
-    game.appendChild(l);
-    lasers.push(l);
+        l.style.left = (rect.left + rect.width/2 + offsetX) + "px";
+        l.style.top = rect.top + "px";
+        l.style.height = height + "px";
+
+        l.dataset.speed = speed;
+
+        game.appendChild(l);
+        lasers.push(l);
+    }
+
+    if(gunType==="basic"){
+        createLaser(-2);
+    }
+    else if(gunType==="triple"){
+        createLaser(-12);
+        createLaser(-2);
+        createLaser(8);
+    }
+    else if(gunType==="spread"){
+        createLaser(-20);
+        createLaser(-10);
+        createLaser(-2);
+        createLaser(8);
+        createLaser(18);
+    }
+    else if(gunType==="laser"){
+        createLaser(-2,15,60);
+    }
+    else if(gunType==="rapid"){
+        createLaser(-2);
+    }
+}
+
+/* START */
+let spawnTimer=0;
+let boxTimer=0;
+let shootCooldown=0;
+
+function startGame(){
+    menu.style.display="none";
+
+    playerX=window.innerWidth/2;
+    obstacles=[]; lasers=[]; boxes=[];
+
+    shield=false;
+    gunType="basic";
+    distance=0;
+
+    gameRunning=true;
+    update();
 }
 
 /* DEBRIS */
-function createDebris() {
-    for (let i = 0; i < 40; i++) {
-        let d = document.createElement("div");
+function createDebris(){
+    for(let i=0;i<40;i++){
+        let d=document.createElement("div");
         d.classList.add("debris");
-
-        d.style.left = Math.random() * window.innerWidth + "px";
-        d.style.top = Math.random() * window.innerHeight + "px";
-
-        d.dataset.speed = 1 + Math.random()*2;
-
+        d.style.left=Math.random()*window.innerWidth+"px";
+        d.style.top=Math.random()*window.innerHeight+"px";
+        d.dataset.speed=1+Math.random()*2;
         game.appendChild(d);
         debrisList.push(d);
     }
 }
 
-function moveDebris() {
-    debrisList.forEach(d => {
-        let y = d.offsetTop + Number(d.dataset.speed);
-
-        if (y > window.innerHeight) {
-            y = 0;
-            d.style.left = Math.random() * window.innerWidth + "px";
+function moveDebris(){
+    debrisList.forEach(d=>{
+        let y=d.offsetTop+Number(d.dataset.speed);
+        if(y>window.innerHeight){
+            y=0;
+            d.style.left=Math.random()*window.innerWidth+"px";
         }
-
-        d.style.top = y + "px";
+        d.style.top=y+"px";
     });
 }
 
-/* START */
-let spawnTimer = 0;
-let spawnDelay = 500;
-let shootCooldown = 0;
-
-function startGame() {
-    menu.style.display = "none";
-
-    playerX = window.innerWidth / 2;
-    obstacles = [];
-    lasers = [];
-
-    spawnTimer = 0;
-    spawnDelay = 500;
-
-    gameRunning = true;
-    update();
-}
-
 /* LOOP */
-function update() {
-    if (!gameRunning) return;
-    if (paused) {
-        requestAnimationFrame(update);
-        return;
-    }
+function update(){
+    if(!gameRunning) return;
 
     /* MOVE */
-    if (keys["ArrowLeft"]) playerX -= 6;
-    if (keys["ArrowRight"]) playerX += 6;
+    if(keys["ArrowLeft"]) playerX-=6;
+    if(keys["ArrowRight"]) playerX+=6;
 
-    if (playerX < 0) playerX = 0;
-    if (playerX > window.innerWidth - 60) playerX = window.innerWidth - 60;
+    player.style.left=playerX+"px";
 
-    player.style.left = playerX + "px";
-
-    /* SHOOT HOLD */
-    if (keys["Space"] && shootCooldown <= 0) {
+    /* SHOOT */
+    if(keys["Space"] && shootCooldown<=0){
         shoot();
-        shootCooldown = 10;
+
+        if(gunType==="rapid"){
+            shootCooldown=3;
+        }else{
+            shootCooldown=10;
+        }
     }
     shootCooldown--;
 
-    /* SPAWN FIX */
-    spawnTimer += 16;
+    /* DISTANCE */
+    distance+=0.1;
+    scoreText.innerText=Math.floor(distance)+" m";
 
-    if (spawnTimer > spawnDelay) {
-        spawnTimer = 0;
-        spawnDelay = 400 + Math.random()*600;
+    /* SPAWN METEOR */
+    spawnTimer+=16;
+    if(spawnTimer>500){
+        spawnTimer=0;
 
-        let obs = document.createElement("div");
-        obs.classList.add("obstacle");
+        let o=document.createElement("div");
+        o.classList.add("obstacle");
+        o.style.left=Math.random()*(window.innerWidth-50)+"px";
+        game.appendChild(o);
+        obstacles.push(o);
+    }
 
-        obs.style.left = Math.random() * (window.innerWidth - 50) + "px";
-        obs.style.top = "0px";
+    /* SPAWN BOX */
+    boxTimer+=16;
+    if(boxTimer>3000){
+        boxTimer=0;
 
-        game.appendChild(obs);
-        obstacles.push(obs);
+        let b=document.createElement("div");
+        b.classList.add("box");
+        b.style.left=Math.random()*(window.innerWidth-40)+"px";
+        game.appendChild(b);
+        boxes.push(b);
     }
 
     /* LASER MOVE */
-    for (let i = lasers.length - 1; i >= 0; i--) {
-        let l = lasers[i];
-        l.style.top = l.offsetTop - 10 + "px";
+    for(let i=lasers.length-1;i>=0;i--){
+        let l=lasers[i];
+        l.style.top = l.offsetTop - (l.dataset.speed||10) + "px";
 
-        if (l.offsetTop < 0) {
+        if(l.offsetTop<0){
             l.remove();
             lasers.splice(i,1);
         }
     }
 
-    /* 💥 METEOR + VA CHẠM FIX */
-    for (let i = obstacles.length - 1; i >= 0; i--) {
-        let o = obstacles[i];
-        o.style.top = o.offsetTop + 4 + "px";
+    /* METEOR */
+    for(let i=obstacles.length-1;i>=0;i--){
+        let o=obstacles[i];
+        o.style.top=o.offsetTop+4+"px";
 
-        let oRect = o.getBoundingClientRect();
-        let pRect = player.getBoundingClientRect();
+        let oR=o.getBoundingClientRect();
+        let pR=player.getBoundingClientRect();
 
-        let oX = oRect.left + oRect.width/2;
-        let oY = oRect.top + oRect.height/2;
-        let pX = pRect.left + pRect.width/2;
-        let pY = pRect.top + pRect.height/2;
+        let dx=(pR.left+pR.width/2)-(oR.left+oR.width/2);
+        let dy=(pR.top+pR.height/2)-(oR.top+oR.height/2);
 
-        let dx = pX - oX;
-        let dy = pY - oY;
+        /* 💥 HIT PLAYER */
+        if(Math.sqrt(dx*dx+dy*dy)<30){
+            if(shield){
+                shield=false;
+                player.classList.remove("shield");
+                o.remove();
+                obstacles.splice(i,1);
+                continue;
+            }
 
-        /* 💥 GAME OVER */
-        if (Math.sqrt(dx*dx + dy*dy) < 30) {
-            gameRunning = false;
-
-            menu.style.display = "flex";
-            menu.innerHTML = `
-                <h1>💥 Game Over</h1>
-                <button onclick="location.reload()">Restart</button>
-            `;
+            gameRunning=false;
+            menu.style.display="flex";
+            menu.innerHTML="<h1>💥 Game Over</h1><button onclick='location.reload()'>Restart</button>";
             return;
         }
 
-        /* 🔫 LASER HIT */
-        for (let j = lasers.length - 1; j >= 0; j--) {
-            let l = lasers[j];
-            let lRect = l.getBoundingClientRect();
+        /* 🔫 HIT METEOR */
+        for(let j=lasers.length-1;j>=0;j--){
+            let l=lasers[j];
+            let lR=l.getBoundingClientRect();
 
-            if (
-                lRect.left < oRect.right &&
-                lRect.right > oRect.left &&
-                lRect.top < oRect.bottom &&
-                lRect.bottom > oRect.top
-            ) {
+            if(
+                lR.left<oR.right &&
+                lR.right>oR.left &&
+                lR.top<oR.bottom &&
+                lR.bottom>oR.top
+            ){
                 o.remove();
                 l.remove();
                 obstacles.splice(i,1);
@@ -286,15 +311,37 @@ function update() {
                 break;
             }
         }
+    }
 
-        if (o.offsetTop > window.innerHeight) {
-            o.remove();
-            obstacles.splice(i,1);
+    /* BOX */
+    for(let i=boxes.length-1;i>=0;i--){
+        let b=boxes[i];
+        b.style.top=b.offsetTop+3+"px";
+
+        let bR=b.getBoundingClientRect();
+        let pR=player.getBoundingClientRect();
+
+        if(
+            bR.left<pR.right &&
+            bR.right>pR.left &&
+            bR.top<pR.bottom &&
+            bR.bottom>pR.top
+        ){
+            b.remove();
+            boxes.splice(i,1);
+
+            let guns=["triple","spread","laser","rapid"];
+
+            if(Math.random()<0.7){
+                gunType = guns[Math.floor(Math.random()*guns.length)];
+            }else{
+                shield=true;
+                player.classList.add("shield");
+            }
         }
     }
 
     moveDebris();
-
     requestAnimationFrame(update);
 }
 
