@@ -157,7 +157,7 @@ button.save {
     <button onclick="showPage('about')">Giới thiệu</button>
     <button onclick="showPage('contact')">Liên hệ</button>
     <button onclick="goPage2()">🌌 Hệ Mặt Trời</button>
-    
+    <button onclick="goGame()">Game giải trí</button>
     <button onclick="showPage('profile')">Profile</button>
     
   </div>
@@ -411,7 +411,9 @@ window.showPage = function(pageId) {
 window.goPage2 = function() {
   window.location.href = "module.html";
 } 
-  
+window.goGame = function() {
+  window.location.href = "game.html";
+}
 window.logout = function() {
   signOut(auth).then(() => window.location.href = "index.html");
 }
