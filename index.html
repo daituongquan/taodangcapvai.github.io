@@ -120,7 +120,14 @@ window.register = function() {
   ) {
     document.getElementById("error").innerText =
       "Có thằng tới trước rồi em ạ sài mail khác hộ cái!";
-    } else {
+    }
+    if (
+    err.code === "auth/invalid-email"
+  ) {
+    document.getElementById("error").innerText =
+      "Đây mà là email à ";
+    }
+    else {
     document.getElementById("error").innerText = err.message;
   }
   });
@@ -140,9 +147,9 @@ window.login = function() {
     err.code === "auth/invalid-credential"
   ) {
     document.getElementById("error").innerText =
-      "❌ Sai tài khoản hoặc mật khẩu!";
+      "❌ Sai mật khẩu rồi má!";
     } else {
-      document.getElementById("error").innerText = "ôi không SOS";
+      document.getElementById("error").innerText = err.message;
     }
   });
 }
