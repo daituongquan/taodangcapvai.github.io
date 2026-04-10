@@ -147,6 +147,11 @@ window.login = function() {
     document.getElementById("error").innerText =
       "❌ Sai mật khẩu hoặc tài khoản!"; 
     } 
+      if (
+    err.code === "auth/invalid-email"
+  ) {
+    document.getElementById("error").innerText =
+      "đây là email à"; }
     else {
       document.getElementById("error").innerText = err.message;
     }
